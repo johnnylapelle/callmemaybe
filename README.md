@@ -5,5 +5,5 @@
 
 Constrained decoding
 - https://www.aidancooper.co.uk/constrained-decoding/
-- 
+-
 
