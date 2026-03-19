@@ -1,4 +1,4 @@
-from llm_sdk.llm_sdk import Small_LLM_Model
+from llm_sdk import Small_LLM_Model
 from numpy import argmax
 
 
@@ -6,7 +6,7 @@ def main():
     llm = Small_LLM_Model()
     logits_id = []
 
-    prompt = "salut auguste"
+    prompt = "combien font 4 + 2 ?"
 
     for _ in range(10):
         encode_return = llm.encode(prompt)
@@ -17,6 +17,8 @@ def main():
 
         logits_id.append(max_logit)
         prompt += llm.decode(logits_id)
+
+    print(prompt)
 
 
 if __name__ == "__main__":
