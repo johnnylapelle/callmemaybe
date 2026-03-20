@@ -1,0 +1,11 @@
+[
+  {
+    "name": "fn_add",
+    "description": "Add two numbers.",
+    "parameters": {
+      "a": { "type": "number" }
+    },
+    "returns": { "type": "number" },
+    "extra": "forbidden field"
+  }
+]

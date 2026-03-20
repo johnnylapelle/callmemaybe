@@ -1,0 +1,10 @@
+[
+  {
+    "name": "fn_add",
+    "description": "Add two numbers.",
+    "parameters": {
+      "a": { "type": "float" }
+    },
+    "returns": { "type": "number" }
+  }
+]

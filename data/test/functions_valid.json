@@ -1,0 +1,19 @@
+[
+  {
+    "name": "fn_add",
+    "description": "Add two numbers.",
+    "parameters": {
+      "a": { "type": "number" },
+      "b": { "type": "number" }
+    },
+    "returns": { "type": "number" }
+  },
+  {
+    "name": "fn_greet",
+    "description": "Greet a person.",
+    "parameters": {
+      "name": { "type": "string" }
+    },
+    "returns": { "type": "string" }
+  }
+]
