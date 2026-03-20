@@ -33,8 +33,6 @@ class Parser():
                 elif arg not in arguments:
                     raise ValueError(f"'{arg}' not a valid argument.")
 
-        print("\n", self.files)
-
     def validates_files(self) -> None:
         arguments = ["--functions_definition", "--input"]
 
