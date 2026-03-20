@@ -1,9 +1,15 @@
 from pathlib import Path
+from ..models.models_class import ParserModel
 
 
 class Parser():
     def __init__(self, args: list[str]) -> None:
-        self.args = args
+        try:
+            ParserModel(args=args)
+            self.args = args
+        except Exception as e:
+            print(f"Error: {e}")
+
         self.files = {
             "--functions_definition": "data/input/functions_definition.json",
             "--input": "data/input/function_calling_tests.json",

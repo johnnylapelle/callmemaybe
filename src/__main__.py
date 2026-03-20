@@ -1,5 +1,5 @@
-from .parser import Parser
-from .reader import Reader
+from .io.parser import Parser
+from .io.reader import Reader
 import sys
 
 

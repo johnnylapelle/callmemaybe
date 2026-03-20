@@ -1,32 +1,17 @@
 import json
-from pydantic import BaseModel, TypeAdapter
-from typing import Literal
-
-
-AllowedType = Literal["number", "string", "boolean", "integer"]
-
-
-class TypeDef(BaseModel):
-    model_config = {"extra": "forbid"}
-    type: AllowedType
-
-
-class FunctionSchema(BaseModel):
-    model_config = {"extra": "forbid"}
-    name: str
-    description: str
-    parameters: dict[str, TypeDef]
-    returns: TypeDef
-
-
-class PromptSchema(BaseModel):
-    model_config = {"extra": "forbid"}
-    prompt: str
+from ..models.models_class import ReaderModel
+from pydantic import TypeAdapter
+from ..models.models_json_files import FunctionSchema, PromptSchema
 
 
 class Reader():
     def __init__(self, files: dict[str, str]) -> None:
-        self.files = files
+        try:
+            ReaderModel(files=files)
+            self.files = files
+        except Exception as e:
+            print(f"Error: {e}")
+
         self.arguments = ["--functions_definition",
                           "--input"]
 
