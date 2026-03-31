@@ -26,8 +26,11 @@ class Parser():
         for i, arg in enumerate(self.args):
             if arg.startswith('--'):
                 if arg in arguments and arguments[arg] == 0:
-                    self.files[arg] = self.args[i + 1]
-                    arguments[arg] += 1
+                    try:
+                        self.files[arg] = self.args[i + 1]
+                        arguments[arg] += 1
+                    except Exception:
+                        raise ValueError("A file after an args in required.")
                 elif arg in arguments and arguments[arg] > 0:
                     raise ValueError(f"arguments '{arg}' found twice.")
                 elif arg not in arguments:

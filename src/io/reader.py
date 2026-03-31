@@ -2,6 +2,7 @@ import json
 from ..models.models_class import ReaderModel
 from pydantic import TypeAdapter
 from ..models.models_json_files import FunctionSchema, PromptSchema
+import sys
 
 
 class Reader():
@@ -31,3 +32,4 @@ class Reader():
                             adapter.validate_python(data)
                     except Exception as e:
                         print(f"Invalid schema in '{file}':\n{e}.")
+                        sys.exit()
