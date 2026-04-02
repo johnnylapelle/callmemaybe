@@ -7,3 +7,6 @@ Constrained decoding
 - https://www.aidancooper.co.uk/constrained-decoding/
 -
 
+Machine State:
+- https://dev.to/karn/building-a-simple-state-machine-in-python
+

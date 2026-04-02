@@ -15,25 +15,27 @@ class StateMachine():
         self.prompt = prompt
         self.functions = functions
         self.fn_token = self.tokenized_fn()
-        # print(self.fn_token)
         self.candidates = self.functions
         self.fn_pos = 0
 
+    def force_tokens(self, tokens_to_force: str) -> list[int]:
+        return self.llm.encode(tokens_to_force).tolist()[0]
+
     def transition(self, token: str):
         if self.state == State.START:
-            self.token_to_force = self.llm.encode('"prompt":').tolist()[0]
+            self.token_to_force = self.force_tokens('"prompt":')
             self.state = State.KEY_PROMPT
 
         elif self.state == State.KEY_PROMPT:
             self.token_to_force.pop(0)
             if len(self.token_to_force) == 0:
-                self.token_to_force = self.llm.encode(self.prompt).tolist()[0]
+                self.token_to_force = self.force_tokens(self.prompt)
                 self.state = State.VALUE_PROMPT
 
         elif self.state == State.VALUE_PROMPT:
             self.token_to_force.pop(0)
             if len(self.token_to_force) == 0:
-                self.token_to_force = self.llm.encode(',"name":"').tolist()[0]
+                self.token_to_force = self.force_tokens(',"name":"')
                 self.state = State.KEY_FUNC_NAME
 
         elif self.state == State.KEY_FUNC_NAME:
@@ -46,7 +48,7 @@ class StateMachine():
                                if self.fn_token[fn.name][self.fn_pos] == token]
             self.fn_pos += 1
             if self.fn_pos == len(self.fn_token[self.candidates[0].name]):
-                self.token_to_force = self.llm.encode('","parameters":').tolist()[0]
+                self.token_to_force = self.force_tokens('","parameters":')
                 self.state = State.KEY_PARAMETERS
 
         elif self.state == State.KEY_PARAMETERS:
