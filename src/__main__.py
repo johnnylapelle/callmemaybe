@@ -1,16 +1,24 @@
 from .io.parser import Parser
 from .io.reader import Reader
 import sys
-from .generation.state_machine import test_constrained_decoding
+# from .generation.state_machine import test_constrained_decoding
+from .generation.generator import Generator
+from llm_sdk.llm_sdk import Small_LLM_Model
+from .generation.vocabulary import Vocabulary
 
 
 def main() -> None:
     try:
         args = sys.argv
+        llm = Small_LLM_Model()
         parser = Parser(args)
         reader = Reader(parser.files)
-        reader.validate_schema()
-        test_constrained_decoding()
+        prompts = reader.get_prompts()
+        generator = Generator(llm, reader.get_functions())
+        prompts = reader.get_prompts()
+        for prompt in prompts:
+            print(prompt)
+            generator.generate(prompt)
     except Exception as e:
         print(f"Error: {e}")
 
