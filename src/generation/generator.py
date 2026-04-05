@@ -60,6 +60,7 @@ class Generator:
             # 8. Ajoute le token à la séquence
             prompt_ids.append(next_token)
             answer.append(next_token)
+            # retokenise le prompt + la réponse
 
             # 9. Dis à la machine quel token a été généré
             print(self.llm.decode([next_token]), end="", flush=True)
