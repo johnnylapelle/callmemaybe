@@ -1,10 +1,8 @@
 from .io.parser import Parser
 from .io.reader import Reader
 import sys
-# from .generation.state_machine import test_constrained_decoding
 from .generation.generator import Generator
 from llm_sdk.llm_sdk import Small_LLM_Model
-from .generation.vocabulary import Vocabulary
 
 
 def main() -> None:
@@ -17,8 +15,10 @@ def main() -> None:
         generator = Generator(llm, reader.get_functions())
         prompts = reader.get_prompts()
         for prompt in prompts:
-            print(prompt)
             generator.generate(prompt)
+            print()
+        # generator.generate(prompts[8])
+        # print()
     except Exception as e:
         print(f"Error: {e}")
 

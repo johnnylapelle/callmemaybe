@@ -31,3 +31,6 @@ class Vocabulary:
         except Exception:
             raise ValueError(f"'{id}' token not found.")
         return token
+
+        # j'encode toute la phrase
+        # puis je passe cette phrase encodé
