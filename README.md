@@ -2,6 +2,7 @@
 
 ## Resources
 - https://www.geeksforgeeks.org/artificial-intelligence/what-is-a-production-system-in-ai/
+- https://aiproductivity.ai/news/caveman-prompting-claude-75-percent-fewer-tokens/
 
 Constrained decoding
 - https://www.aidancooper.co.uk/constrained-decoding/

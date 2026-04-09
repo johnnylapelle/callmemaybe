@@ -3,6 +3,7 @@ from .io.reader import Reader
 import sys
 from .generation.generator import Generator
 from llm_sdk.llm_sdk import Small_LLM_Model
+# from .generation.state_machine import StateMachine
 
 
 def main() -> None:
@@ -12,8 +13,9 @@ def main() -> None:
         parser = Parser(args)
         reader = Reader(parser.files)
         prompts = reader.get_prompts()
-        generator = Generator(llm, reader.get_functions())
+        functions = reader.get_functions()
         prompts = reader.get_prompts()
+        generator = Generator(llm, functions)
         for prompt in prompts:
             generator.generate(prompt)
             print()
