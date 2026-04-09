@@ -22,7 +22,8 @@ class StateMachine():
             "parameters": {}
         }
 
-        self.fn_token = self.tokenized_fn()  # tokenise de functions
+        # tokenise the functions
+        self.fn_token = self.tokenized_fn()
         # all the fn are candidates by default
         self.candidates = self.functions
         self.fn_pos = 0
@@ -37,7 +38,6 @@ class StateMachine():
     def transition(self, token: str) -> None:
         if self.state == State.START:
             self.state = State.VALUE_FUNC_NAME
-            # print(f"TransState = {self.state}")
 
         elif self.state == State.VALUE_FUNC_NAME:
             self.candidates = [
@@ -50,11 +50,13 @@ class StateMachine():
                     self.chosen_fn = self.candidates[0]
                     self.result["name"] = self.chosen_fn.name
                     self.params_todo = list(self.chosen_fn.parameters.keys())
-                    print(self.params_todo)
+                    self.current_param = self.params_todo.pop(0)
+                    # print(self.params_todo)
                     self.state = State.PARAMETERS
 
         elif self.state == State.PARAMETERS:
-            self.sate = State.END
+            param_type = self.chosen_fn.parameters[self.current_param].type
+            self.state = self.get_state_for_types(param_type)
 
         elif self.state == State.VALUE_PARAM_NUMBER:
             pass
@@ -90,3 +92,15 @@ class StateMachine():
             for id in ids:
                 tokenized[fn.name].append(self.llm.decode(id))
         return tokenized
+
+    def get_state_for_types(self, param_type: str) -> State:
+        match param_type:
+            case "number":
+                return State.VALUE_PARAM_NUMBER
+            case "string":
+                return State.VALUE_PARAM_STR
+            case "boolean":
+                return State.VALUE_PARAM_INT
+            case "integer":
+                return State.VALUE_PARAM_BOOL
+        return State.VALUE_PARAM_STR
