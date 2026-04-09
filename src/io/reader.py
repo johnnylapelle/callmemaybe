@@ -38,3 +38,6 @@ class Reader():
         except ValidationError as e:
             print(f"Error: {e}")
             sys.exit()
+
+    def get_output_path(self) -> str:
+        return self.files["--output"]

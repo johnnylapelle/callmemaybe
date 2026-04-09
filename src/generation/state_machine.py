@@ -1,13 +1,13 @@
 from llm_sdk.llm_sdk import Small_LLM_Model
 from .state import State
 from .vocabulary import Vocabulary
-from ..models.models_json_files import FunctionSchema
+from ..models.models_json_files import FunctionSchema, PromptSchema
 # from typing import Any
 
 
 class StateMachine():
     def __init__(self, llm: Small_LLM_Model,
-                 prompt: str,
+                 prompt: PromptSchema,
                  functions: list[FunctionSchema]):
         self.llm = llm
         self.state = State.START
@@ -17,6 +17,7 @@ class StateMachine():
         self.functions = functions
 
         self.result = {
+            "prompt": self.prompt.prompt,
             "name": "",
             "parameters": {}
         }

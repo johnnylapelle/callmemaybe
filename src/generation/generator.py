@@ -4,15 +4,18 @@ from .state_machine import StateMachine
 import numpy as np
 from numpy.typing import NDArray
 from .vocabulary import Vocabulary
-# import json
+from typing import Any
 
 
 class Generator:
     def __init__(self, llm: Small_LLM_Model,
-                 functions: list[FunctionSchema]):
+                 functions: list[FunctionSchema],
+                 output: str):
         self.llm = llm
         self.functions = functions
         self.vocab = Vocabulary(self.llm)
+        self.output = output
+        self.result: list[dict[str, Any]] = []
 
     def _build_prompt(self, user_request: PromptSchema) -> str:
         fn_list = "\n".join([
@@ -38,10 +41,8 @@ class Generator:
         return mask
 
     def generate(self, prompt: PromptSchema) -> None:
-        clean_prompt = '"' + prompt.prompt + '"'
-
         self.state_machine = StateMachine(self.llm,
-                                          clean_prompt,
+                                          prompt,
                                           self.functions)
 
         self.state_machine.tokenized_fn()
@@ -76,5 +77,5 @@ class Generator:
         # 10. Reconstruit le JSON généré
         print()
         print(self.state_machine.result)
-        # print("ANSWER:", self.llm.decode(answer), "\n")
-        # print(json.loads(self.llm.decode(answer)))
+
+        self.result.append(self.state_machine.result)

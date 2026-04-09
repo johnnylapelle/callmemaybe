@@ -1,0 +1,52 @@
+[
+    {
+        "prompt": "What is 2 plus 3?",
+        "name": "fn_add_numbers",
+        "parameters": {}
+    },
+    {
+        "prompt": "Add 100 and 200",
+        "name": "fn_add_numbers",
+        "parameters": {}
+    },
+    {
+        "prompt": "Multiply 6 by 7",
+        "name": "fn_multiply_numbers",
+        "parameters": {}
+    },
+    {
+        "prompt": "What is 12 times 5?",
+        "name": "fn_multiply_numbers",
+        "parameters": {}
+    },
+    {
+        "prompt": "Greet Alice",
+        "name": "fn_greet",
+        "parameters": {}
+    },
+    {
+        "prompt": "Say hello to Bob",
+        "name": "fn_greet",
+        "parameters": {}
+    },
+    {
+        "prompt": "Reverse the string 'hello'",
+        "name": "fn_reverse_string",
+        "parameters": {}
+    },
+    {
+        "prompt": "Reverse 'world'",
+        "name": "fn_reverse_string",
+        "parameters": {}
+    },
+    {
+        "prompt": "Is 4 even?",
+        "name": "fn_is_even",
+        "parameters": {}
+    },
+    {
+        "prompt": "Check if 7 is even",
+        "name": "fn_is_even",
+        "parameters": {}
+    }
+]
