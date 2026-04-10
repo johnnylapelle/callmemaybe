@@ -18,10 +18,13 @@ def main() -> None:
         prompts = reader.get_prompts()
         output = reader.get_output_path()
         generator = Generator(llm, functions, output)
+
         for prompt in prompts:
             generator.generate(prompt)
             print()
-        # generator.generate(prompts[8])
+
+        # generator.generate(prompts[6])
+        # generator.generate(prompts[7])
         # print()
         with open(output, 'w') as f:
             json.dump(generator.result, f, indent=4)

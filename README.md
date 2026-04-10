@@ -13,3 +13,6 @@ Constrained decoding
 Machine State:
 - https://dev.to/karn/building-a-simple-state-machine-in-python
 
+Limitation:
+- Negative numbers
+- nombres negatifs decimaux

@@ -53,7 +53,6 @@ class Generator:
         input_ids = self.llm.encode(full_prompt).tolist()[0]
 
         while not self.state_machine.is_it_the_end():
-            # print(f"GenState = {self.state_machine.state}")
             logits = self.llm.get_logits_from_input_ids(input_ids)
 
             valid_ids = self.state_machine.get_valid_ids()
@@ -65,16 +64,17 @@ class Generator:
             np_logits = self._filter_logits(logits, valid_ids)
 
             next_token = int(np.argmax(np_logits))
-            next_token_decoded = self.llm.decode([next_token])
+            token_decoded = self.llm.decode([next_token])
 
-            self.state_machine.transition(next_token_decoded)
-            answer += next_token_decoded
-            print(next_token_decoded, end="", flush=True)
+            self.state_machine.transition(token_decoded)
+            answer += token_decoded
+            print(token_decoded, end="", flush=True)
 
             new_input = full_prompt + answer
             input_ids = self.llm.encode(new_input).tolist()[0]
 
-        # 10. Reconstruit le JSON généré
+            # print(f"StateNum {self.state_machine.num_parser.state_num}")
+
         print()
         print(self.state_machine.result)
 
