@@ -16,3 +16,4 @@ Machine State:
 Limitation:
 - Negative numbers
 - nombres negatifs decimaux
+- regexs simples comme "cat" marche mais pas les patterns complexes

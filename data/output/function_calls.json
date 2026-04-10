@@ -1,58 +1,29 @@
 [
     {
-        "prompt": "What is the sum of 2 and 3?",
-        "name": "fn_add_numbers",
+        "prompt": "Replace all numbers in \"Hello 34 I'm 233 years old\" with NUMBERS",
+        "name": "fn_substitute_string_with_regex",
         "parameters": {
-            "a": 2.0,
-            "b": 3
+            "source_string": "Hello 34 I'm 233 years old",
+            "regex": "34 233",
+            "replacement": "NUMBERS"
         }
     },
     {
-        "prompt": "What is the sum of 265 and 345?",
-        "name": "fn_add_numbers",
+        "prompt": "Replace all vowels in 'Programming is fun' with asterisks",
+        "name": "fn_substitute_string_with_regex",
         "parameters": {
-            "a": 265.0,
-            "b": 345
+            "source_string": "Programming is fun",
+            "regex": "[^aeiouAEIOU]g",
+            "replacement": "**"
         }
     },
     {
-        "prompt": "What is the sum of -265 and -345?",
-        "name": "fn_add_numbers",
+        "prompt": "Substitute the word 'cat' with 'dog' in 'The cat sat on the mat with another cat'",
+        "name": "fn_substitute_string_with_regex",
         "parameters": {
-            "a": 265.0,
-            "b": 345
-        }
-    },
-    {
-        "prompt": "What is the sum of 2.123456789 and 345.123456789?",
-        "name": "fn_add_numbers",
-        "parameters": {
-            "a": 2.123456789,
-            "b": 345
-        }
-    },
-    {
-        "prompt": "What is the sum of -265.50 and -345.756?",
-        "name": "fn_add_numbers",
-        "parameters": {
-            "a": 12345678901.0,
-            "b": 12345678901
-        }
-    },
-    {
-        "prompt": "What is the addtion of 2 and 3?",
-        "name": "fn_add_numbers",
-        "parameters": {
-            "a": 2.0,
-            "b": 3
-        }
-    },
-    {
-        "prompt": "What is 2 plus 3?",
-        "name": "fn_add_numbers",
-        "parameters": {
-            "a": 2.0,
-            "b": 3
+            "source_string": "The cat sat on the mat with another cat",
+            "regex": "cat->dog",
+            "replacement": "dog"
         }
     }
 ]

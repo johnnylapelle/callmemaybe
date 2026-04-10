@@ -19,13 +19,12 @@ def main() -> None:
         output = reader.get_output_path()
         generator = Generator(llm, functions, output)
 
-        for prompt in prompts:
-            generator.generate(prompt)
-            print()
+        # for prompt in prompts:
+        #     generator.generate(prompt)
 
-        # generator.generate(prompts[6])
-        # generator.generate(prompts[7])
-        # print()
+        generator.generate(prompts[4])
+        generator.generate(prompts[5])
+        generator.generate(prompts[6])
         with open(output, 'w') as f:
             json.dump(generator.result, f, indent=4)
 

@@ -5,6 +5,7 @@ import numpy as np
 from numpy.typing import NDArray
 from .vocabulary import Vocabulary
 from typing import Any
+from .state import State
 
 
 class Generator:
@@ -19,16 +20,16 @@ class Generator:
 
     def _build_prompt(self, user_request: PromptSchema) -> str:
         fn_list = "\n".join([
-            f"- {fn.name}: {fn.description}"
+            f"- {fn.name}"
             for fn in self.functions
         ])
         return (
             "<|im_start|>system\n"
-            "Select function. Match request."
+            "Select function and parameters. Match request.\n"
             f"\n{fn_list}\n"
             "<|im_end|>\n"
             "<|im_start|>user\n"
-            f"{user_request}\n"
+            f"{user_request.prompt}\n"
             "<|im_end|>\n"
             "<|im_start|>assistant\n"
         )
@@ -70,12 +71,22 @@ class Generator:
             answer += token_decoded
             print(token_decoded, end="", flush=True)
 
-            new_input = full_prompt + answer
-            input_ids = self.llm.encode(new_input).tolist()[0]
+            if self.state_machine.state == State.VALUE_PARAM_STR:
+                fn = self.state_machine.chosen_fn
+                param = self.state_machine.current_param
+                new_input = (full_prompt + f"{fn.name} ({param}=\"" +
+                             self.state_machine.str_parser.result)
+                # print(new_input)
+                input_ids = self.llm.encode(new_input).tolist()[0]
+            else:
+                new_input = full_prompt + answer
+                input_ids = self.llm.encode(new_input).tolist()[0]
 
-            # print(f"StateNum {self.state_machine.num_parser.state_num}")
+            # new_input = full_prompt + answer
+            # input_ids = self.llm.encode(new_input).tolist()[0]
 
         print()
         print(self.state_machine.result)
+        print()
 
         self.result.append(self.state_machine.result)

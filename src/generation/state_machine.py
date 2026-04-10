@@ -48,11 +48,6 @@ class StateMachine():
         elif self.state == State.VALUE_FUNC_NAME:
             self.state_value_func_name(token)
 
-        elif self.state == State.PARAMETERS:
-            self.param_type = self.chosen_fn.parameters[
-                self.current_param].type
-            self.state = self.get_state_for_types()
-
         elif self.state == State.VALUE_PARAM_NUMBER:
             done = self.num_parser.transition(token)
             if done:
@@ -76,6 +71,9 @@ class StateMachine():
         elif self.state == State.VALUE_PARAM_NUMBER:
             return self.num_parser.get_valid_ids()
 
+        elif self.state == State.VALUE_PARAM_STR:
+            return self.str_parser.get_valid_ids()
+
         return None
 
     def is_it_the_end(self) -> bool:
@@ -93,17 +91,17 @@ class StateMachine():
                 tokenized[fn.name].append(self.llm.decode(id))
         return tokenized
 
-    def get_state_for_types(self) -> State:
+    def get_state_for_types(self) -> None:
         match self.param_type:
             case "number":
-                return State.VALUE_PARAM_NUMBER
-            case "string":
-                return State.VALUE_PARAM_STR
-            case "boolean":
-                return State.VALUE_PARAM_BOOL
+                self.state = State.VALUE_PARAM_NUMBER
             case "integer":
-                return State.VALUE_PARAM_NUMBER
-        return State.VALUE_PARAM_STR
+                self.state = State.VALUE_PARAM_NUMBER
+            case "string":
+                self.state = State.VALUE_PARAM_STR
+            case "boolean":
+                self.state = State.VALUE_PARAM_BOOL
+        State.VALUE_PARAM_STR
 
     def state_value_func_name(self, token: str) -> None:
         self.candidates = [
@@ -117,7 +115,9 @@ class StateMachine():
                 self.result["name"] = self.chosen_fn.name
                 self.params_todo = list(self.chosen_fn.parameters.keys())
                 self.current_param = self.params_todo.pop(0)
-                self.state = State.PARAMETERS
+                self.param_type = self.chosen_fn.parameters[
+                    self.current_param].type
+                self.get_state_for_types()
 
     def setup_next_param_or_end(self) -> None:
         match self.param_type:
@@ -129,7 +129,7 @@ class StateMachine():
                     self.num_parser.result))
             case "string":
                 self.result["parameters"][self.current_param] = (
-                    self.str_parser.result)
+                    self.str_parser.result.strip())
 
         self.num_parser.result = ""
 
@@ -139,7 +139,7 @@ class StateMachine():
             self.current_param = self.params_todo.pop(0)
             self.param_type = self.chosen_fn.parameters[
                 self.current_param].type
-            self.state = self.get_state_for_types()
+            self.get_state_for_types()
 
         else:
             self.state = State.END

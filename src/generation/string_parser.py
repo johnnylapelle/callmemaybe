@@ -26,26 +26,27 @@ from .vocabulary import Vocabulary
 
 class StringParser():
     def __init__(self, vocab: Vocabulary):
-        self.state_str = StateStr.QUOTE
+        self.state = StateStr.QUOTE
         self.vocab = vocab
         self.result = ""
 
     def transition(self, token: str) -> bool:
-        self.result += token
+        if token != '"':
+            self.result += token
 
-        if self.state_str == StateStr.QUOTE:
-            self.state_str = StateStr.CHARACTERS
+        if self.state == StateStr.QUOTE:
+            self.state = StateStr.CHARACTERS
 
-        elif self.state_str == StateStr.CHARACTERS:
+        elif self.state == StateStr.CHARACTERS:
             if token == '"':
-                self.state_str = StateStr.END
+                self.state = StateStr.END
             elif token == '/':
-                self.state_str == StateStr.ESCAPE
+                self.state == StateStr.ESCAPE
 
-        elif self.state_str == StateStr.ESCAPE:
-            self.state_str = StateStr.CHARACTERS
+        elif self.state == StateStr.ESCAPE:
+            self.state = StateStr.CHARACTERS
 
-        if self.state_str == StateStr.END:
+        if self.state == StateStr.END:
             return True
 
         return False
@@ -53,17 +54,19 @@ class StringParser():
     def get_valid_ids(self) -> list[int]:
         valid_ids: list[int] = []
 
-        if self.state_str == StateStr.QUOTE:
+        if self.state == StateStr.QUOTE:
             valid_ids = self.vocab.get_ids_for(['"'])
 
-        elif self.state_str == StateStr.CHARACTERS:
-            valid_ids = list(self.vocab.vocab.values())
+        elif self.state == StateStr.CHARACTERS:
+            valid_ids = [id for token, id in self.vocab.vocab.items()
+                         if '"' not in token or token == '"']
 
-        elif self.state_str == StateStr.ESCAPE:
+        elif self.state == StateStr.ESCAPE:
             valid_ids = self.vocab.get_ids_for([
                 '"', '\\', "/", 'b', 'f', 'n', 'r', 't'])
 
         return valid_ids
 
     def reset(self) -> None:
-        self.state_str = StateStr.QUOTE
+        self.result = ""
+        self.state = StateStr.QUOTE
