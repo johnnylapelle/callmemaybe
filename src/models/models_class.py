@@ -14,7 +14,7 @@ class ParserModel(BaseModel):
 
 class TypeParserModel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    vocab: Vocabulary
+    # vocab: Vocabulary
 
 
 class StateMachineModel(BaseModel):

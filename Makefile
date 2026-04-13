@@ -6,6 +6,10 @@ ARGS = $(F_DEF) $(INPUT) $(OUTPUT)
 FLAKE8 = flake8
 MYPY = mypy
 
+install:
+	uv pip install pydandic
+	uv pip install torch
+
 run:
 	uv run --env-file .env python -m src
 

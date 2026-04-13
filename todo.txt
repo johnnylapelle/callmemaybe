@@ -1,6 +1,6 @@
 Todo:
 - List parser [OK]
-- Faire des models pour chaque class
+- Faire des models pour chaque class [OK]
 - checker que le json output est valide
 	- Pydantic
 	- Verifier cette forme (prompt, name, parameters)

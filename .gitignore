@@ -1,8 +1,8 @@
 venv
+.venv
 .mypy_cache
 src/__pycache__
 Dockerfile
 .env
 llm_sdk/llm_sdk/__pycache__
 moulinette
-venv

@@ -14,7 +14,7 @@ class Reader():
 
         self.files = files
 
-    def get_functions(self):
+    def get_functions(self) -> list[FunctionSchema]:
         file = self.files["--functions_definition"]
         try:
             with open(file, 'r') as f:
@@ -27,7 +27,7 @@ class Reader():
             print(f"Error: {e}")
             sys.exit()
 
-    def get_prompts(self):
+    def get_prompts(self) -> list[PromptSchema]:
         file = self.files["--input"]
         try:
             with open(file, 'r') as f:

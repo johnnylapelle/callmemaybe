@@ -14,13 +14,6 @@ class Vocabulary:
         with open(self.llm.get_path_to_vocab_file(), 'r') as f:
             self.vocab = json.load(f)
 
-    def get_id(self, token: str) -> int:
-        try:
-            id = self.vocab[token]
-        except Exception:
-            raise ValueError(f"token '{token}' id not found.")
-        return id
-
     def get_ids_for(self, tokens: list[str]) -> list[int]:
         try:
             ids = []
