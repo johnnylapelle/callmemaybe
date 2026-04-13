@@ -1,0 +1,17 @@
+Todo:
+- List parser [OK]
+- Faire des models pour chaque class
+- checker que le json output est valide
+	- Pydantic
+	- Verifier cette forme (prompt, name, parameters)
+- create pyproject.toml
+- Faire un prompt pour la gen de function et un pour les parameters
+- Check that output directory is created during execution
+- Faire une visualisation de la generation
+- Refonte de toute la remontée d'erreur
+	- Message d'erreur précis
+	- Catch des erreurs précises
+- Recoder Encode/Decode (a voir)
+- Regarder pour supporter d'autres modèles
+- Faire une suite de tests
+- Docstrings

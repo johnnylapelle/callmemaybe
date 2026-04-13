@@ -4,11 +4,12 @@ from ..models.models_class import ParserModel
 
 class Parser():
     def __init__(self, args: list[str]) -> None:
-        try:
-            ParserModel(args=args)
-            self.args = args
-        except Exception as e:
-            print(f"Error: {e}")
+
+        ParserModel(
+            args=args
+            )
+
+        self.args = args
 
         self.files = {
             "--functions_definition": "data/input/functions_definition.json",

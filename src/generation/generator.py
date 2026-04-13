@@ -1,5 +1,6 @@
 from llm_sdk.llm_sdk import Small_LLM_Model
 from ..models.models_json_files import FunctionSchema, PromptSchema
+from ..models.models_class import GeneratorModel
 from .state_machine import StateMachine
 import numpy as np
 from numpy.typing import NDArray
@@ -12,6 +13,12 @@ class Generator:
     def __init__(self, llm: Small_LLM_Model,
                  functions: list[FunctionSchema],
                  output: str):
+
+        GeneratorModel(
+            llm=llm,
+            functions=functions,
+            output=output)
+
         self.llm = llm
         self.functions = functions
         self.vocab = Vocabulary(self.llm)
@@ -25,12 +32,14 @@ class Generator:
         ])
         return (
             "<|im_start|>system\n"
-            "Select function and parameters. Match request.\n"
+            "Select function. Match request.\n"
             f"\n{fn_list}\n"
             "<|im_end|>\n"
+
             "<|im_start|>user\n"
             f"{user_request.prompt}\n"
             "<|im_end|>\n"
+
             "<|im_start|>assistant\n"
         )
 
@@ -49,6 +58,7 @@ class Generator:
         self.state_machine.tokenized_fn()
 
         answer = ""
+
         print(prompt)
         full_prompt = self._build_prompt(prompt)
         input_ids = self.llm.encode(full_prompt).tolist()[0]
@@ -73,17 +83,13 @@ class Generator:
 
             if self.state_machine.state == State.VALUE_PARAM_STR:
                 fn = self.state_machine.chosen_fn
-                param = self.state_machine.current_param
+                param = self.state_machine.curr_param
                 new_input = (full_prompt + f"{fn.name} ({param}=\"" +
                              self.state_machine.str_parser.result)
-                # print(new_input)
                 input_ids = self.llm.encode(new_input).tolist()[0]
             else:
                 new_input = full_prompt + answer
                 input_ids = self.llm.encode(new_input).tolist()[0]
-
-            # new_input = full_prompt + answer
-            # input_ids = self.llm.encode(new_input).tolist()[0]
 
         print()
         print(self.state_machine.result)

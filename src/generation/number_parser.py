@@ -1,9 +1,15 @@
 from .state import StateNum
 from .vocabulary import Vocabulary
+from ..models.models_class import TypeParserModel
 
 
 class NumberParser():
     def __init__(self, vocab: Vocabulary):
+
+        TypeParserModel(
+            vocab=vocab
+        )
+
         self.state = StateNum.QUOTE
         self.vocab = vocab
         self.result = ""
@@ -41,6 +47,8 @@ class NumberParser():
                 self.state = StateNum.END
             elif token in "Ee":
                 self.state = StateNum.EXPONENT
+            else:
+                self.state = StateNum.DECIMAL
 
         elif self.state == StateNum.DECIMAL:
             if token in '",':

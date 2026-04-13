@@ -4,18 +4,29 @@ from .vocabulary import Vocabulary
 from ..models.models_json_files import FunctionSchema, PromptSchema
 from .number_parser import NumberParser
 from .string_parser import StringParser
+from .array_parser import ArrayParser
 from typing import Any
+import ast
+from ..models.models_class import StateMachineModel
 
 
 class StateMachine():
     def __init__(self, llm: Small_LLM_Model,
                  prompt: PromptSchema,
                  functions: list[FunctionSchema]):
+
+        StateMachineModel(
+            llm=llm,
+            prompt=prompt,
+            functions=functions
+        )
+
         self.llm = llm
         self.state = State.START
         self.vocab = Vocabulary(self.llm)
         self.num_parser = NumberParser(self.vocab)
         self.str_parser = StringParser(self.vocab)
+        self.array_parser = ArrayParser(self.vocab)
         self.token_to_force: list[int] = []
         self.prompt = prompt
         self.functions = functions
@@ -34,7 +45,7 @@ class StateMachine():
         self.chosen_fn: FunctionSchema = self.functions[0]
 
         self.param_type: str = ""
-        self.current_param: str = ""
+        self.curr_param: str = ""
         self.params_todo: list = []
         self.parameters_done: list = []
 
@@ -58,6 +69,11 @@ class StateMachine():
             if done:
                 self.setup_next_param_or_end()
 
+        elif self.state == State.VALUE_PARAM_ARRAY:
+            done = self.array_parser.transition(token)
+            if done:
+                self.setup_next_param_or_end()
+
         else:
             pass
 
@@ -73,6 +89,9 @@ class StateMachine():
 
         elif self.state == State.VALUE_PARAM_STR:
             return self.str_parser.get_valid_ids()
+
+        elif self.state == State.VALUE_PARAM_ARRAY:
+            return self.array_parser.get_valid_ids()
 
         return None
 
@@ -100,8 +119,9 @@ class StateMachine():
             case "string":
                 self.state = State.VALUE_PARAM_STR
             case "boolean":
-                self.state = State.VALUE_PARAM_BOOL
-        State.VALUE_PARAM_STR
+                self.state = State.VALUE_PARAM_STR
+            case "array":
+                self.state = State.VALUE_PARAM_ARRAY
 
     def state_value_func_name(self, token: str) -> None:
         self.candidates = [
@@ -114,31 +134,34 @@ class StateMachine():
                 self.chosen_fn = self.candidates[0]
                 self.result["name"] = self.chosen_fn.name
                 self.params_todo = list(self.chosen_fn.parameters.keys())
-                self.current_param = self.params_todo.pop(0)
+                self.curr_param = self.params_todo.pop(0)
                 self.param_type = self.chosen_fn.parameters[
-                    self.current_param].type
+                    self.curr_param].type
                 self.get_state_for_types()
 
     def setup_next_param_or_end(self) -> None:
         match self.param_type:
             case "number":
-                self.result["parameters"][self.current_param] = float(
+                self.result["parameters"][self.curr_param] = float(
                     self.num_parser.result)
             case "integer":
-                self.result["parameters"][self.current_param] = int(float(
+                self.result["parameters"][self.curr_param] = int(float(
                     self.num_parser.result))
             case "string":
-                self.result["parameters"][self.current_param] = (
+                self.result["parameters"][self.curr_param] = (
                     self.str_parser.result.strip())
-
-        self.num_parser.result = ""
+            case "array":
+                self.result["parameters"][self.curr_param] = ast.literal_eval(
+                    self.array_parser.result)
 
         if len(self.params_todo) > 0:
             self.num_parser.reset()
             self.str_parser.reset()
-            self.current_param = self.params_todo.pop(0)
+            self.array_parser.reset()
+
+            self.curr_param = self.params_todo.pop(0)
             self.param_type = self.chosen_fn.parameters[
-                self.current_param].type
+                self.curr_param].type
             self.get_state_for_types()
 
         else:

@@ -1,0 +1,67 @@
+return (
+	"<|im_start|>system\n"
+	"Instructions:\n"
+	"Select function and parameters. Match request.\n"
+	"List of the functions:"
+	f"\n{fn_list}\n"
+	"<|im_end|>\n"
+	"<|im_start|>user\n"
+	"The user prompt:\n"
+	f"{user_request.prompt}\n"
+	"<|im_end|>\n"
+	"<|im_start|>assistant\n"
+)
+Result = Regexes are not all valid
+
+
+return (
+	"<|im_start|>system\n"
+	"Instructions:\n"
+	"You are a function calling assistant\n"
+	"Select function and parameters and match user request.\n"
+	"List of the functions:"
+	f"\n{fn_list}\n"
+	"<|im_end|>\n"
+	"<|im_start|>user\n"
+	"The user request:\n"
+	f"{user_request.prompt}\n"
+	"<|im_end|>\n"
+	"<|im_start|>assistant\n"
+)
+Result = Regexes are not all valid
+
+
+return (
+	"<|im_start|>system\n"
+	"Instructions:\n"
+	"You are a function calling assistant\n"
+	"Select function and parameters and match user request.\n"
+	"You must generate valid regex.\n"
+	"List of the functions:"
+	f"\n{fn_list}\n"
+	"<|im_end|>\n"
+	"<|im_start|>user\n"
+	"The user request:\n"
+	f"{user_request.prompt}\n"
+	"<|im_end|>\n"
+	"<|im_start|>assistant\n"
+)
+Result = Infinite loop on regex generation
+
+
+return (
+	"<|im_start|>system\n"
+	"Instructions:\n"
+	"You are a function calling assistant\n"
+	"Select function and parameters and match user request.\n"
+	"You must generate valid concise regex.\n"
+	"List of the functions:"
+	f"\n{fn_list}\n"
+	"<|im_end|>\n"
+	"<|im_start|>user\n"
+	"The user request:\n"
+	f"{user_request.prompt}\n"
+	"<|im_end|>\n"
+	"<|im_start|>assistant\n"
+)
+Result = Infinite loop on regex generation

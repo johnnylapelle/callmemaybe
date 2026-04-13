@@ -7,6 +7,7 @@ class State(Enum):
     VALUE_PARAM_NUMBER = auto()  # param if its a number
     VALUE_PARAM_STR = auto()  # param if its a str
     VALUE_PARAM_BOOL = auto()  # param if its a str
+    VALUE_PARAM_ARRAY = auto()  # param if its a str
     END = auto()  # end
 
 
@@ -27,4 +28,11 @@ class StateStr(Enum):
     QUOTE = auto()
     CHARACTERS = auto()
     ESCAPE = auto()
+    END = auto()
+
+
+class StateArray(Enum):
+    QUOTE = auto()
+    OPEN_BRAC = auto()
+    GENERATION = auto()
     END = auto()

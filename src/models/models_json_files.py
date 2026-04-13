@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Literal
 
 
-AllowedType = Literal["number", "string", "boolean", "integer"]
+AllowedType = Literal["number", "string", "boolean", "integer", "array"]
 
 
 class TypeDef(BaseModel):

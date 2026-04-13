@@ -1,10 +1,15 @@
 from llm_sdk.llm_sdk import Small_LLM_Model
+from ..models.models_class import VocabularyModel
 import json
 
 
 class Vocabulary:
     def __init__(self, llm: Small_LLM_Model):
         self.llm = llm
+
+        VocabularyModel(
+            llm=llm
+        )
 
         with open(self.llm.get_path_to_vocab_file(), 'r') as f:
             self.vocab = json.load(f)

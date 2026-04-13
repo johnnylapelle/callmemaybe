@@ -7,11 +7,12 @@ import sys
 
 class Reader():
     def __init__(self, files: dict[str, str]) -> None:
-        try:
-            ReaderModel(files=files)
-            self.files = files
-        except Exception as e:
-            print(f"Error: {e}")
+
+        ReaderModel(
+            files=files
+            )
+
+        self.files = files
 
     def get_functions(self):
         file = self.files["--functions_definition"]

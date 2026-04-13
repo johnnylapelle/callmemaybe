@@ -1,44 +1,31 @@
-# QUOTE_OPEN
-#   → '"' → CHARACTERS
-
-# CHARACTERS
-#   → any codepoint except " \ control chars → CHARACTERS (loop)
-#   → '\' → ESCAPE
-#   → '"' → END
-
-# ESCAPE
-#   → '"'  → CHARACTERS  (escaped quote)
-#   → '\'  → CHARACTERS  (escaped backslash)
-#   → '/'  → CHARACTERS  (solidus)
-#   → 'b'  → CHARACTERS  (backspace)
-#   → 'f'  → CHARACTERS  (formfeed)
-#   → 'n'  → CHARACTERS  (newline)
-#   → 'r'  → CHARACTERS  (carriage return)
-#   → 't'  → CHARACTERS  (tab)
-#   → 'u'  → UNICODE
-
-# UNICODE
-#   → 4 hex digits → CHARACTERS
-
 from .state import StateStr
 from .vocabulary import Vocabulary
+from ..models.models_class import TypeParserModel
 
 
 class StringParser():
     def __init__(self, vocab: Vocabulary):
+
+        TypeParserModel(
+            vocab=vocab
+        )
+
         self.state = StateStr.QUOTE
         self.vocab = vocab
         self.result = ""
+        self.max_token = 20
+        self.char_count = 0
 
     def transition(self, token: str) -> bool:
         if token != '"':
             self.result += token
+            self.char_count += 1
 
         if self.state == StateStr.QUOTE:
             self.state = StateStr.CHARACTERS
 
         elif self.state == StateStr.CHARACTERS:
-            if token == '"':
+            if token == '"' or self.char_count >= self.max_token:
                 self.state = StateStr.END
             elif token == '/':
                 self.state == StateStr.ESCAPE
@@ -70,3 +57,4 @@ class StringParser():
     def reset(self) -> None:
         self.result = ""
         self.state = StateStr.QUOTE
+        self.char_count = 0
