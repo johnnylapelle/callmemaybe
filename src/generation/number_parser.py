@@ -1,6 +1,6 @@
+from ..models.models_class import TypeParserModel
 from .state import StateNum
 from .vocabulary import Vocabulary
-from ..models.models_class import TypeParserModel
 
 
 class NumberParser():

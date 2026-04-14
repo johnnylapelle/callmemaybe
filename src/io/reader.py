@@ -1,8 +1,10 @@
 import json
-from ..models.models_class import ReaderModel
-from pydantic import ValidationError
-from ..models.models_json_files import FunctionSchema, PromptSchema
 import sys
+
+from pydantic import ValidationError
+
+from ..models.models_class import ReaderModel
+from ..models.models_json_files import FunctionSchema, PromptSchema
 
 
 class Reader():

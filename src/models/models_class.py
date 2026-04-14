@@ -1,8 +1,11 @@
-from pydantic import BaseModel, ConfigDict
-from ..generation.vocabulary import Vocabulary
-from llm_sdk.llm_sdk import Small_LLM_Model
-from .models_json_files import PromptSchema, FunctionSchema
 from typing import Any
+
+from pydantic import BaseModel, ConfigDict
+
+from llm_sdk.llm_sdk import Small_LLM_Model
+
+from ..generation.vocabulary import Vocabulary
+from .models_json_files import FunctionSchema, PromptSchema
 
 
 class ReaderModel(BaseModel):

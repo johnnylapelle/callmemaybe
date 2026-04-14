@@ -1,10 +1,13 @@
+import sys
+
+from pydantic import ValidationError
+
+from llm_sdk.llm_sdk import Small_LLM_Model
+
+from .generation.generator import Generator
 from .io.parser import Parser
 from .io.reader import Reader
 from .io.writer import Writer
-import sys
-from .generation.generator import Generator
-from llm_sdk.llm_sdk import Small_LLM_Model
-from pydantic import ValidationError
 
 
 def main() -> None:

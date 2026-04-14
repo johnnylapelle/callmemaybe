@@ -9,8 +9,8 @@ Todo:
 	- Pydantic
 	- Verifier cette forme (prompt, name, parameters)
 - Faire un prompt pour la gen de function et un pour les parameters [OK]
+- Check that output directory is created during execution [OK]
 
-- Check that output directory is created during execution
 - Faire une visualisation de la generation
 - Refonte de toute la remontée d'erreur
 	- Message d'erreur précis

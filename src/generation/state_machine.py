@@ -1,13 +1,15 @@
-from llm_sdk.llm_sdk import Small_LLM_Model
-from .state import State
-from .vocabulary import Vocabulary
-from ..models.models_json_files import FunctionSchema, PromptSchema
-from .number_parser import NumberParser
-from .string_parser import StringParser
-from .array_parser import ArrayParser
-from typing import Any
 import ast
+from typing import Any
+
+from llm_sdk.llm_sdk import Small_LLM_Model
+
 from ..models.models_class import StateMachineModel
+from ..models.models_json_files import FunctionSchema, PromptSchema
+from .array_parser import ArrayParser
+from .number_parser import NumberParser
+from .state import State
+from .string_parser import StringParser
+from .vocabulary import Vocabulary
 
 
 class StateMachine():

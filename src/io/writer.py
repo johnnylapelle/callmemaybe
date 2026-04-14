@@ -1,9 +1,11 @@
-from typing import Any
-from pydantic import ValidationError
-from ..models.models_json_files import OutputSchema
-from ..models.models_class import WriterModel
-from pathlib import Path
 import json
+from pathlib import Path
+from typing import Any
+
+from pydantic import ValidationError
+
+from ..models.models_class import WriterModel
+from ..models.models_json_files import OutputSchema
 
 
 class Writer:
@@ -20,11 +22,12 @@ class Writer:
         self.output_path = output_path
 
     def write(self) -> None:
-        validated: list[OutputSchema] = []
+        validated: list[dict[str, Any]] = []
 
         for result in self.results:
             try:
-                validated.append(OutputSchema.model_validate(result).model_dump())
+                validated.append(
+                    OutputSchema.model_validate(result).model_dump())
             except ValidationError as e:
                 print(f"ValidationError: Invalid result {e}")
 

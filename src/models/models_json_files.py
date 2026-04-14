@@ -1,6 +1,6 @@
-from pydantic import BaseModel
-from typing import Literal, Any
+from typing import Any, Literal
 
+from pydantic import BaseModel
 
 AllowedType = Literal["number", "string", "boolean", "integer", "array"]
 
@@ -28,4 +28,3 @@ class OutputSchema(BaseModel):
     prompt: str
     name: str
     parameters: dict[str, Any]
-

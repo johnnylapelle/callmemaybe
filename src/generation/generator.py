@@ -1,12 +1,15 @@
-from llm_sdk.llm_sdk import Small_LLM_Model
-from ..models.models_json_files import FunctionSchema, PromptSchema
-from ..models.models_class import GeneratorModel
-from .state_machine import StateMachine
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
-from .vocabulary import Vocabulary
-from typing import Any
+
+from llm_sdk.llm_sdk import Small_LLM_Model
+
+from ..models.models_class import GeneratorModel
+from ..models.models_json_files import FunctionSchema, PromptSchema
 from .state import State
+from .state_machine import StateMachine
+from .vocabulary import Vocabulary
 
 
 class Generator:
@@ -44,14 +47,14 @@ class Generator:
         )
 
     def _filter_logits(self, logits: list[float],
-                       valid_ids: list[int]) -> NDArray:
+                       valid_ids: list[int]) -> NDArray[np.float64]:
 
         np_logits = np.array(logits)
         mask = np.full(len(np_logits), float("-inf"))
         mask[valid_ids] = np_logits[valid_ids]
         return mask
 
-    def _get_prompt(self, full_prompt: str, answer: str) -> list[int]:
+    def _get_prompt(self, full_prompt: str, answer: str) -> Any:
         if self.state_machine.state == State.VALUE_PARAM_STR:
             fn = self.state_machine.chosen_fn
             param = self.state_machine.curr_param
@@ -70,7 +73,6 @@ class Generator:
 
         # print(new_input)
         return input_ids
-
 
     def generate(self, prompt: PromptSchema) -> None:
         self.state_machine = StateMachine(self.llm,
@@ -110,7 +112,6 @@ class Generator:
             # add the token to the answer and get the next prompt
             answer += token_decoded
             input_ids = self._get_prompt(full_prompt, answer)
-
 
         print()
         print(self.state_machine.result)
