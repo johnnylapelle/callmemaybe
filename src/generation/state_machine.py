@@ -21,15 +21,15 @@ class StateMachine():
             functions=functions
         )
 
-        self.llm = llm
-        self.state = State.START
-        self.vocab = Vocabulary(self.llm)
-        self.num_parser = NumberParser(self.vocab)
-        self.str_parser = StringParser(self.vocab)
-        self.array_parser = ArrayParser(self.vocab)
+        self.llm: Small_LLM_Model = llm
+        self.state: State = State.START
+        self.vocab: Vocabulary = Vocabulary(self.llm)
+        self.num_parser: NumberParser = NumberParser(self.vocab)
+        self.str_parser: StringParser = StringParser(self.vocab)
+        self.array_parser: ArrayParser = ArrayParser(self.vocab)
         self.token_to_force: list[int] = []
-        self.prompt = prompt
-        self.functions = functions
+        self.prompt: PromptSchema = prompt
+        self.functions: list[FunctionSchema] = functions
 
         self.result: dict[str, Any] = {
             "prompt": self.prompt.prompt,
@@ -37,42 +37,37 @@ class StateMachine():
             "parameters": {}
         }
 
-        # tokenise the functions
-        self.fn_token = self.tokenized_fn()
-        # all the fn are candidates by default
-        self.candidates = self.functions
-        self.fn_pos = 0
+        self.fn_token: dict[str, list[str]] = self._tokenized_fn()
+        self.candidates: list[FunctionSchema] = self.functions
+        self.fn_pos: int = 0
         self.chosen_fn: FunctionSchema = self.functions[0]
 
         self.param_type: str = ""
         self.curr_param: str = ""
-        self.params_todo: list = []
-        self.parameters_done: list = []
-
-    def force_tokens(self, tokens_to_force: str) -> list[int]:
-        return self.llm.encode(tokens_to_force).tolist()[0]
+        self.params_todo: list[str] = []
+        self.params_done: dict[str, str] = {}
 
     def transition(self, token: str) -> None:
         if self.state == State.START:
             self.state = State.VALUE_FUNC_NAME
 
         elif self.state == State.VALUE_FUNC_NAME:
-            self.state_value_func_name(token)
+            self._state_value_func_name(token)
 
         elif self.state == State.VALUE_PARAM_NUMBER:
             done = self.num_parser.transition(token)
             if done:
-                self.setup_next_param_or_end()
+                self._setup_next_param_or_end()
 
         elif self.state == State.VALUE_PARAM_STR:
             done = self.str_parser.transition(token)
             if done:
-                self.setup_next_param_or_end()
+                self._setup_next_param_or_end()
 
         elif self.state == State.VALUE_PARAM_ARRAY:
             done = self.array_parser.transition(token)
             if done:
-                self.setup_next_param_or_end()
+                self._setup_next_param_or_end()
 
         else:
             pass
@@ -101,7 +96,7 @@ class StateMachine():
         else:
             return False
 
-    def tokenized_fn(self) -> dict[str, list[str]]:
+    def _tokenized_fn(self) -> dict[str, list[str]]:
         tokenized: dict[str, list[str]] = {}
         for fn in self.functions:
             ids = self.llm.encode(fn.name).tolist()[0]
@@ -110,7 +105,7 @@ class StateMachine():
                 tokenized[fn.name].append(self.llm.decode(id))
         return tokenized
 
-    def get_state_for_types(self) -> None:
+    def _get_state_for_types(self) -> None:
         match self.param_type:
             case "number":
                 self.state = State.VALUE_PARAM_NUMBER
@@ -123,7 +118,7 @@ class StateMachine():
             case "array":
                 self.state = State.VALUE_PARAM_ARRAY
 
-    def state_value_func_name(self, token: str) -> None:
+    def _state_value_func_name(self, token: str) -> None:
         self.candidates = [
             fn for fn in self.candidates
             if self.fn_token[fn.name][self.fn_pos] == token]
@@ -137,22 +132,27 @@ class StateMachine():
                 self.curr_param = self.params_todo.pop(0)
                 self.param_type = self.chosen_fn.parameters[
                     self.curr_param].type
-                self.get_state_for_types()
+                self._get_state_for_types()
 
-    def setup_next_param_or_end(self) -> None:
+    def _setup_next_param_or_end(self) -> None:
         match self.param_type:
             case "number":
-                self.result["parameters"][self.curr_param] = float(
-                    self.num_parser.result)
+                result = self.num_parser.result
+                self.result["parameters"][self.curr_param] = float(result)
             case "integer":
+                result = self.num_parser.result
                 self.result["parameters"][self.curr_param] = int(float(
-                    self.num_parser.result))
+                    result))
             case "string":
+                result = self.str_parser.result
                 self.result["parameters"][self.curr_param] = (
-                    self.str_parser.result.strip())
+                    result.strip())
             case "array":
+                result = self.array_parser.result
                 self.result["parameters"][self.curr_param] = ast.literal_eval(
-                    self.array_parser.result)
+                    result)
+
+        self.params_done[self.curr_param] = result
 
         if len(self.params_todo) > 0:
             self.num_parser.reset()
@@ -162,7 +162,7 @@ class StateMachine():
             self.curr_param = self.params_todo.pop(0)
             self.param_type = self.chosen_fn.parameters[
                 self.curr_param].type
-            self.get_state_for_types()
+            self._get_state_for_types()
 
         else:
             self.state = State.END

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Literal
+from typing import Literal, Any
 
 
 AllowedType = Literal["number", "string", "boolean", "integer", "array"]
@@ -21,3 +21,11 @@ class FunctionSchema(BaseModel):
 class PromptSchema(BaseModel):
     model_config = {"extra": "forbid"}
     prompt: str
+
+
+class OutputSchema(BaseModel):
+    model_config = {"extra": "forbid"}
+    prompt: str
+    name: str
+    parameters: dict[str, Any]
+

@@ -3,22 +3,16 @@
         "prompt": "What is the sum of 0.2 and 3?",
         "name": "fn_add_numbers",
         "parameters": {
-            "a": [
-                0.2,
-                3
-            ],
-            "b": 0.2
+            "a": 0.2,
+            "b": 3.0
         }
     },
     {
         "prompt": "What is the sum of 265 and 345?",
         "name": "fn_add_numbers",
         "parameters": {
-            "a": [
-                265,
-                345
-            ],
-            "b": 265.0
+            "a": 265.0,
+            "b": 345.0
         }
     },
     {
@@ -39,18 +33,14 @@
         "prompt": "Reverse the string 'hello'",
         "name": "fn_reverse_string",
         "parameters": {
-            "s": [
-                "hello"
-            ]
+            "s": "hello"
         }
     },
     {
         "prompt": "Reverse the string 'world'",
         "name": "fn_reverse_string",
         "parameters": {
-            "s": [
-                "world"
-            ]
+            "s": "world"
         }
     },
     {
@@ -72,7 +62,7 @@
         "name": "fn_substitute_string_with_regex",
         "parameters": {
             "source_string": "Hello 34 I'm 233 years old",
-            "regex": "34 233",
+            "regex": "([0-9]+)\\\\s([0-9]+)\\\\s([0-9",
             "replacement": "NUMBERS"
         }
     },
@@ -81,8 +71,8 @@
         "name": "fn_substitute_string_with_regex",
         "parameters": {
             "source_string": "Programming is fun",
-            "regex": "[^aeiouAEIOU]g",
-            "replacement": "**"
+            "regex": "[aeiouAEIOU]([a-zA-Z])",
+            "replacement": "*|*|*|*|*|*|*|*|*|*|"
         }
     },
     {
@@ -90,7 +80,7 @@
         "name": "fn_substitute_string_with_regex",
         "parameters": {
             "source_string": "The cat sat on the mat with another cat",
-            "regex": "cat->dog",
+            "regex": "cat",
             "replacement": "dog"
         }
     }

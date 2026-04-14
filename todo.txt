@@ -1,11 +1,15 @@
 Todo:
 - List parser [OK]
 - Faire des models pour chaque class [OK]
-- checker que le json output est valide
+- Create pyproject.toml [OK]
+	- Pour ajouter un module -> uv add <module>
+	- Pour installer -> uv sync OU make install
+- Créer le Writer qui écrit dans un json et qui le valide [OK]
+- Checker que le json output est valide [OK]
 	- Pydantic
 	- Verifier cette forme (prompt, name, parameters)
-- create pyproject.toml
-- Faire un prompt pour la gen de function et un pour les parameters
+- Faire un prompt pour la gen de function et un pour les parameters [OK]
+
 - Check that output directory is created during execution
 - Faire une visualisation de la generation
 - Refonte de toute la remontée d'erreur
@@ -15,3 +19,5 @@ Todo:
 - Regarder pour supporter d'autres modèles
 - Faire une suite de tests
 - Docstrings
+- Type hints TOUT
+- Trier les imports

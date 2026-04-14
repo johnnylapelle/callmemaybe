@@ -2,6 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from ..generation.vocabulary import Vocabulary
 from llm_sdk.llm_sdk import Small_LLM_Model
 from .models_json_files import PromptSchema, FunctionSchema
+from typing import Any
 
 
 class ReaderModel(BaseModel):
@@ -12,9 +13,14 @@ class ParserModel(BaseModel):
     args: list[str]
 
 
+class WriterModel(BaseModel):
+    results: list[dict[str, Any]]
+    output_path: str
+
+
 class TypeParserModel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    # vocab: Vocabulary
+    vocab: Vocabulary
 
 
 class StateMachineModel(BaseModel):

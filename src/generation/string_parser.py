@@ -28,7 +28,7 @@ class StringParser():
             if token == '"' or self.char_count >= self.max_token:
                 self.state = StateStr.END
             elif token == '/':
-                self.state == StateStr.ESCAPE
+                self.state = StateStr.ESCAPE
 
         elif self.state == StateStr.ESCAPE:
             self.state = StateStr.CHARACTERS

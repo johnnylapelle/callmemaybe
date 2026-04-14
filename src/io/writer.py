@@ -1,0 +1,32 @@
+from typing import Any
+from pydantic import ValidationError
+from ..models.models_json_files import OutputSchema
+from ..models.models_class import WriterModel
+from pathlib import Path
+import json
+
+
+class Writer:
+    def __init__(self, results: list[dict[str, Any]],
+                 output_path: str):
+
+        WriterModel(
+            results=results,
+            output_path=output_path
+        )
+
+        Path("data/output").mkdir(parents=True, exist_ok=True)
+        self.results = results
+        self.output_path = output_path
+
+    def write(self) -> None:
+        validated: list[OutputSchema] = []
+
+        for result in self.results:
+            try:
+                validated.append(OutputSchema.model_validate(result).model_dump())
+            except ValidationError as e:
+                print(f"ValidationError: Invalid result {e}")
+
+        with open(self.output_path, 'w') as f:
+            json.dump(validated, f, indent=4)
