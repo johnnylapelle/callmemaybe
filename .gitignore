@@ -14,3 +14,5 @@ test_regex.py
 moulinette/
 todo.txt
 prompts.txt
+data/output/
+data/test/

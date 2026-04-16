@@ -40,6 +40,7 @@ class StateMachine():
         }
 
         self.fn_token: dict[str, list[str]] = self._tokenized_fn()
+        print(self.fn_token)
         self.candidates: list[FunctionSchema] = self.functions
         self.fn_pos: int = 0
         self.chosen_fn: FunctionSchema = self.functions[0]
@@ -153,6 +154,10 @@ class StateMachine():
                 result = self.array_parser.result
                 self.result["parameters"][self.curr_param] = ast.literal_eval(
                     result)
+            case "boolean":
+                result = self.str_parser.result
+                self.result["parameters"][self.curr_param] = (
+                    result.strip())
 
         # print(self.result)
         self.params_done[self.curr_param] = result
