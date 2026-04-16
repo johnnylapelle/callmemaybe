@@ -1,0 +1,23 @@
+[
+  {
+    "prompt": "What is the sum of 2 and 3?"
+  },
+  {
+    "prompt": "What is the sum of 265 and 345?"
+  },
+  {
+    "prompt": "What is the sum of -265 and -345?"
+  },
+  {
+    "prompt": "What is the sum of 2.123456789 and 345.123456789?"
+  },
+  {
+    "prompt": "What is the sum of -265.50 and -345.756?"
+  },
+  {
+    "prompt": "What is the addtion of 2 and 3?"
+  },
+  {
+    "prompt": "What is 2 plus 3?"
+  }
+]

@@ -1,5 +1,5 @@
 # flake8: noqa
-# mypy: ignore-errors 
+# mypy: ignore-errors
 # ABOUTME: LLM SDK for local model inference using Hugging Face transformers.
 # ABOUTME: Provides Small_LLM_Model class for loading and running causal language models.
 
@@ -33,6 +33,7 @@ class Small_LLM_Model:
     def __init__(
         self,
         model_name: str = "Qwen/Qwen3-0.6B",
+        # model_name: str = "Qwen/Qwen3-1.7B",
         *,
         device: str | None = None,
         dtype: torch.dtype | None = None,

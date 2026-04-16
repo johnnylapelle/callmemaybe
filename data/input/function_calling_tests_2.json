@@ -1,0 +1,12 @@
+[
+  {"prompt": "What is 2 plus 3?"},
+  {"prompt": "Add 100 and 200"},
+  {"prompt": "Multiply 6 by 7"},
+  {"prompt": "What is 12 times 5?"},
+  {"prompt": "Greet Alice"},
+  {"prompt": "Say hello to Bob"},
+  {"prompt": "Reverse the string 'hello'"},
+  {"prompt": "Reverse 'world'"},
+  {"prompt": "Is 4 even?"},
+  {"prompt": "Check if 7 is even"}
+]
