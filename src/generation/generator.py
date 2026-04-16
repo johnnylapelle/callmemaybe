@@ -28,14 +28,14 @@ class Generator:
         self.output = output
         self.final_result: list[dict[str, Any]] = []
 
-    def _build_prompt(self, user_request: PromptSchema) -> str:
+    def _build_function_prompt(self, user_request: PromptSchema) -> str:
         fn_list = "\n".join([
             f"- {fn.name}"
             for fn in self.functions
         ])
         return (
             "<|im_start|>system\n"
-            "Select function. Match request.\n"
+            "You are a function caller assistant.\n"
             f"{fn_list}\n"
             "<|im_end|>\n"
 
@@ -46,6 +46,33 @@ class Generator:
             "<|im_start|>assistant\n"
         )
 
+    def _build_parameters_prompt(self, user_request: PromptSchema) -> str:
+        fn = self.state_machine.chosen_fn
+        param = self.state_machine.curr_param
+        param_done_str = ", ".join([
+            f'{k}="{v}"' for k, v in self.state_machine.params_done.items()
+        ])
+        parameters = ", ".join([param for param in fn.parameters])
+        return (
+            # "<|im_start|>system\n"
+            # "You are a function caller assistant.\n"
+            # "<|im_end|>\n"
+
+            "<|im_start|>user\n"
+            "This is the user request:\n"
+            f"{user_request.prompt}\n"
+            "Use this function:\n"
+            f"{fn.name}.\n"
+            "<|im_end|>\n"
+
+            "<|im_start|>assistant\n"
+            f"Parameters done: {param_done_str}\n"
+            f"Current parameter: {param}=\""
+            # f"({param_done_str}, {param}=\""
+            f"{self.state_machine.str_parser.result}"
+        )
+
+
     def _filter_logits(self, logits: list[float],
                        valid_ids: list[int]) -> NDArray[np.float64]:
 
@@ -54,24 +81,15 @@ class Generator:
         mask[valid_ids] = np_logits[valid_ids]
         return mask
 
-    def _get_prompt(self, full_prompt: str, answer: str) -> Any:
+    def _get_prompt(self, answer: str, user_request: PromptSchema) -> Any:
         if self.state_machine.state == State.VALUE_PARAM_STR:
-            fn = self.state_machine.chosen_fn
-            param = self.state_machine.curr_param
-            param_done_str = ", ".join([
-                f'{k}="{v}"' for k, v in self.state_machine.params_done.items()
-            ])
-
-            new_input = (full_prompt
-                         + f"{fn.name} ({param_done_str}, {param}=\""
-                         + self.state_machine.str_parser.result)
-
+            new_input = self._build_parameters_prompt(user_request)
             input_ids = self.llm.encode(new_input).tolist()[0]
         else:
-            new_input = full_prompt + answer
+            new_input = self._build_function_prompt(user_request) + answer
             input_ids = self.llm.encode(new_input).tolist()[0]
 
-        # print(new_input)
+        # print('\n', new_input)
         return input_ids
 
     def generate(self, prompt: PromptSchema) -> None:
@@ -79,12 +97,10 @@ class Generator:
                                           prompt,
                                           self.functions)
 
-        self.state_machine._tokenized_fn()
-
         answer = ""
 
-        print(prompt)
-        full_prompt = self._build_prompt(prompt)
+        print("Prompt:", prompt.prompt)
+        full_prompt = self._build_function_prompt(prompt)
         input_ids = self.llm.encode(full_prompt).tolist()[0]
 
         while not self.state_machine.is_it_the_end():
@@ -111,9 +127,12 @@ class Generator:
 
             # add the token to the answer and get the next prompt
             answer += token_decoded
-            input_ids = self._get_prompt(full_prompt, answer)
+            # input_ids.append(next_token)
+            # print(self.llm.decode(input_ids))
+            input_ids = self._get_prompt(answer, prompt)
 
         print()
+        print("\nGenerated JSON:")
         print(self.state_machine.result)
         print()
 

@@ -10,7 +10,24 @@ Todo:
 	- Verifier cette forme (prompt, name, parameters)
 - Faire un prompt pour la gen de function et un pour les parameters [OK]
 - Check that output directory is created during execution [OK]
+- Trier les imports [OK]
+- Type hints TOUT [OK]
 
+MANDATORY:
+- Lire la doc sur les regex afin de voir si on peut faire du constrained dessus
+- Docstrings
+- Makefile rule debug
+- .gitignore propre
+	- /output
+	- __pycache__
+	- .env
+	- .venv
+- Faire le README
+- Ajouter des trucs dans fichier __init__.py (?)
+- Gérer les cas ou une definition manque / un prompt ne correspond pas a une fonction
+
+
+BONUS:
 - Faire une visualisation de la generation
 - Refonte de toute la remontée d'erreur
 	- Message d'erreur précis
@@ -18,6 +35,11 @@ Todo:
 - Recoder Encode/Decode (a voir)
 - Regarder pour supporter d'autres modèles
 - Faire une suite de tests
-- Docstrings
-- Type hints TOUT
-- Trier les imports
+	- Edge case :
+		- Empty strings
+		- Large numbers
+
+
+Today:
+- Amélioration de la génération des regexs
+- Optimisation du prompting

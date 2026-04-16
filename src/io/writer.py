@@ -17,7 +17,7 @@ class Writer:
             output_path=output_path
         )
 
-        Path("data/output").mkdir(parents=True, exist_ok=True)
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         self.results = results
         self.output_path = output_path
 
