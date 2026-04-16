@@ -26,13 +26,13 @@ def main() -> None:
         generator = Generator(llm, functions, output_path)
         results = generator.final_result
 
-        # for i, prompt in enumerate(prompts):
-        #     print(f"- PROMPT {i + 1}:")
-        #     generator.generate(prompt)
+        for i, prompt in enumerate(prompts):
+            print(f"- PROMPT {i + 1}:")
+            generator.generate(prompt)
 
-        generator.generate(prompts[8])
-        generator.generate(prompts[9])
-        generator.generate(prompts[10])
+        # generator.generate(prompts[8])
+        # generator.generate(prompts[9])
+        # generator.generate(prompts[10])
 
         # Valid the results and write them
         writer = Writer(results, output_path)
@@ -42,8 +42,8 @@ def main() -> None:
         print(f"ValidationError: {e}")
     except ValueError as e:
         print(f"ValueError: {e}")
-    except Exception as e:
-        print(f"Error: {e}")
+    # except Exception as e:
+    #     print(f"Error: la{e}")
 
 
 if __name__ == "__main__":

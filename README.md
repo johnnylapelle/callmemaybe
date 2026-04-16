@@ -23,6 +23,7 @@ uv run python -m src
 ### Debug
 To run the program in a debug mode
 ```
+make debug
 ```
 
 ## Resources
@@ -68,23 +69,79 @@ Once the name is resolved, the algorithm transitions to generating the parameter
 Each FSM are built in a way to respect the JSON structure. Using theses schemes: https://www.json.org/json-en.html
 
 ## Design decisions
+### Modular architecture
+The architecture follows a **strictly modular, object-oriented design, assigning dedicated classes**—Parser, Reader, Writer, Generator, and StateMachine—to each core responsibility. This includes specialized sub-parsers (String, Number, Array) for precise data validation.
+
+### Finite-State Machine
+Choosing a **Finite-State Machine (FSM)** ensures maximum precision by enforcing strict constraints at every step. This approach provides superior traceability throughout the generation process and simplifies the integration of future features through a structured, state-driven workflow.
+
 ## Performance analysis
+
 ## Challenges faced
-Limitation:
-- Negative numbers
-- nombres negatifs decimaux
-- regexs simples comme "cat" marche mais pas les patterns complexes
 
-Idea:
-- For constraining the regex i came up with an idea:
-	Let the LLM rephrase the prompt in a way that is syntactically parsable.
-	Indentify the request and call the right pattern:
-		Example:
-			"Replace all digits with NUMBERS"
-			REPLACE: digits; WITH: NUMBERS
-			"digits" -> \d+
+- **Optimising the mask**:
+To optimize the decoding process, the system uses NumPy vectorization to apply constraints across the entire vocabulary simultaneously. By treating the token set as a single mathematical block rather than using slow Python loops, the algorithm initializes a global penalty vector and uses direct array indexing to instantly suppress unauthorized tokens. This makes the FSM-driven filtering computationally efficient, ensuring that strict syntax enforcement never bottlenecks the LLM's generation speed.
 
-			"vowels" -> [aeiouAEIOU]
-			"word cat" -> cat
+### Limitations faced
+**Negative Numbers**: The model occasionally struggles with the leading minus sign or the logic required to transition into a negative numerical state accurately.
+
+**Complex Regex**: While simple patterns are manageable through prompt rephrasing, the model's low parameter count limits its ability to generate or adhere to sophisticated regular expressions.
+
+**Hallucination**: Even with constrained decoding, the model may still attempt to generate "plausible-sounding" but incorrect parameters if the prompt context is ambiguous or outside its training knowledge.
+
+### Ideas
+For constraining the regex i came up with an idea:\
+Let the LLM rephrase the prompt in a way that is syntactically parsable.
+Indentify the request and constrained the right pattern. While this ensures high reliability for simple patterns, it remains a limited approach for more complex expressions.
+
+```
+"Replace all digits with NUMBERS" -> REPLACE: "digits"; WITH: "NUMBERS"
+
+if "digits":
+	return \\d+
+elif "vowels":
+	return [aeiouAEIOU]
+else:
+	return REPLACE
+```
+
 ## Testing strategy
 ## Example usage
+We need a **functions_definition.json** file:
+```json
+{
+"name": "fn_add_numbers",
+"description": "Add two numbers together and return their sum.",
+"parameters": {
+	"a": {
+	"type": "number"
+	},
+	"b": {
+	"type": "number"
+	}
+},
+"returns": {
+	"type": "number"
+}
+}
+```
+
+And a **function_calling.json** file:
+```json
+{
+"prompt": "What is the sum of 0.2 and 3?"
+}
+```
+
+The program will process the prompt and constrains the output to match ```fn_add_numbers``` definition into an **output JSON file**:
+
+```json
+{
+	"prompt": "What is the sum of 0.2 and 3?",
+	"name": "fn_add_numbers",
+	"parameters": {
+		"a": 0.2,
+		"b": 3.0
+	}
+}
+```

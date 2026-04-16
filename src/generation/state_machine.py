@@ -40,7 +40,6 @@ class StateMachine():
         }
 
         self.fn_token: dict[str, list[str]] = self._tokenized_fn()
-        print(self.fn_token)
         self.candidates: list[FunctionSchema] = self.functions
         self.fn_pos: int = 0
         self.chosen_fn: FunctionSchema = self.functions[0]
