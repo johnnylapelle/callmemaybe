@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-from llm_sdk import Small_LLM_Model
-from numpy import argmax
-=======
 import sys
 
 from pydantic import ValidationError
@@ -12,20 +8,15 @@ from .generation.generator import Generator
 from .io.parser import Parser
 from .io.reader import Reader
 from .io.writer import Writer
->>>>>>> 4ae41f90f4cd32e28f7956557ed90e72d5953649
 
 
 def main() -> None:
     try:
         args = sys.argv
 
-<<<<<<< HEAD
-    prompt = "combien font 4 + 2 ?"
-=======
         llm = Small_LLM_Model()
         parser = Parser(args)
         reader = Reader(parser.files)
->>>>>>> 4ae41f90f4cd32e28f7956557ed90e72d5953649
 
         prompts = reader.get_prompts()
         functions = reader.get_functions()
