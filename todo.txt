@@ -12,9 +12,11 @@ Todo:
 - Check that output directory is created during execution [OK]
 - Trier les imports [OK]
 - Type hints TOUT [OK]
+- Faire une visualisation de la generation [OK]
+- Lire la doc sur les regex afin de voir si on peut faire du constrained dessus [OK]
+- Gérer les cas ou une definition manque / un prompt ne correspond pas a une fonction [OK]
 
 MANDATORY:
-- Lire la doc sur les regex afin de voir si on peut faire du constrained dessus
 - Docstrings
 - Makefile rule debug
 - .gitignore propre
@@ -23,12 +25,8 @@ MANDATORY:
 	- .env
 	- .venv
 - Faire le README
-- Ajouter des trucs dans fichier __init__.py (?)
-- Gérer les cas ou une definition manque / un prompt ne correspond pas a une fonction
-
 
 BONUS:
-- Faire une visualisation de la generation
 - Refonte de toute la remontée d'erreur
 	- Message d'erreur précis
 	- Catch des erreurs précises
@@ -38,8 +36,3 @@ BONUS:
 	- Edge case :
 		- Empty strings
 		- Large numbers
-
-
-Today:
-- Amélioration de la génération des regexs
-- Optimisation du prompting

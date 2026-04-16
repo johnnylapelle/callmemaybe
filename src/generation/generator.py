@@ -35,7 +35,7 @@ class Generator:
         ])
         return (
             "<|im_start|>system\n"
-            "You are a function caller assistant.\n"
+            "You are function-calling assistant.\n"
             f"{fn_list}\n"
             "<|im_end|>\n"
 
@@ -52,26 +52,20 @@ class Generator:
         param_done_str = ", ".join([
             f'{k}="{v}"' for k, v in self.state_machine.params_done.items()
         ])
-        parameters = ", ".join([param for param in fn.parameters])
         return (
-            # "<|im_start|>system\n"
-            # "You are a function caller assistant.\n"
-            # "<|im_end|>\n"
-
             "<|im_start|>user\n"
-            "This is the user request:\n"
+            "CRITICAL RULES:\n"
+            "- Extract values ONLY from the user input\n"
+            "- NEVER invent values\n"
+            "- Copy text EXACTLY as it appears\n\n"
+            "User Request:\n"
             f"{user_request.prompt}\n"
-            "Use this function:\n"
-            f"{fn.name}.\n"
-            "<|im_end|>\n"
+            "<|im_end|>\n\n"
 
             "<|im_start|>assistant\n"
-            f"Parameters done: {param_done_str}\n"
-            f"Current parameter: {param}=\""
-            # f"({param_done_str}, {param}=\""
+            f"{fn.name} ({param_done_str} {param}=\""
             f"{self.state_machine.str_parser.result}"
         )
-
 
     def _filter_logits(self, logits: list[float],
                        valid_ids: list[int]) -> NDArray[np.float64]:
@@ -89,7 +83,6 @@ class Generator:
             new_input = self._build_function_prompt(user_request) + answer
             input_ids = self.llm.encode(new_input).tolist()[0]
 
-        # print('\n', new_input)
         return input_ids
 
     def generate(self, prompt: PromptSchema) -> None:
@@ -99,7 +92,7 @@ class Generator:
 
         answer = ""
 
-        print("Prompt:", prompt.prompt)
+        print(prompt.prompt, "\n")
         full_prompt = self._build_function_prompt(prompt)
         input_ids = self.llm.encode(full_prompt).tolist()[0]
 
@@ -127,14 +120,9 @@ class Generator:
 
             # add the token to the answer and get the next prompt
             answer += token_decoded
-            # input_ids.append(next_token)
-            # print(self.llm.decode(input_ids))
             input_ids = self._get_prompt(answer, prompt)
 
-        print()
-        print("\nGenerated JSON:")
-        print(self.state_machine.result)
-        print()
+        print("\n\nGenerated JSON:\n", self.state_machine.result, "\n\n\n")
 
         # append the result of the current prompt to the final result
         self.final_result.append(self.state_machine.result)

@@ -26,8 +26,11 @@ class Writer:
 
         for result in self.results:
             try:
-                validated.append(
-                    OutputSchema.model_validate(result).model_dump())
+                data = OutputSchema.model_validate(result).model_dump()
+                data["parameters"]["replacement"] = data[
+                    "parameters"]["replacement"].replace("\\\\", "\\")
+                validated.append(data)
+
             except ValidationError as e:
                 print(f"ValidationError: Invalid result {e}")
 

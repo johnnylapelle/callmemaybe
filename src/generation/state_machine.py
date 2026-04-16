@@ -154,6 +154,7 @@ class StateMachine():
                 self.result["parameters"][self.curr_param] = ast.literal_eval(
                     result)
 
+        # print(self.result)
         self.params_done[self.curr_param] = result
 
         if len(self.params_todo) > 0:

@@ -10,11 +10,11 @@ run:
 
 lint:
 	$(FLAKE8) src/
-	$(MYPY) src/
+	$(MYPY) $(FLAGS) src/
 
 lint-strict:
 	$(FLAKE8) src/
-	$(MYPY) $(FLAGS) --strict src/
+	$(MYPY) --strict src/
 
 clean:
 	rm -rf .mypy_cache

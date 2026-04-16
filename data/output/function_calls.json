@@ -4,8 +4,8 @@
         "name": "fn_substitute_string_with_regex",
         "parameters": {
             "source_string": "Hello 34 I'm 233 years old",
-            "regex": "34|233",
-            "replacement": "34"
+            "regex": "([0-9]+) [0-9]+ [0-9]+ [0-9]+ [0-9]+ [0-9",
+            "replacement": "\\1\\2\\3\\4\\5\\6"
         }
     },
     {

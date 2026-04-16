@@ -13,7 +13,7 @@ class StringParser():
         self.state = StateStr.QUOTE
         self.vocab = vocab
         self.result = ""
-        self.max_token = 20
+        self.max_token = 30
         self.char_count = 0
 
     def transition(self, token: str) -> bool:
@@ -27,7 +27,7 @@ class StringParser():
         elif self.state == StateStr.CHARACTERS:
             if token == '"' or self.char_count >= self.max_token:
                 self.state = StateStr.END
-            elif token == '/':
+            elif token == '\\':
                 self.state = StateStr.ESCAPE
 
         elif self.state == StateStr.ESCAPE:
@@ -50,7 +50,7 @@ class StringParser():
 
         elif self.state == StateStr.ESCAPE:
             valid_ids = self.vocab.get_ids_for([
-                '"', '\\', "/", 'b', 'f', 'n', 'r', 't'])
+                '"', "/", 'b', 'f', 'n', 'r', 't'])
 
         return valid_ids
 

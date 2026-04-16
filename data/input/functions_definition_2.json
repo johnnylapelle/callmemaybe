@@ -1,14 +1,5 @@
 [
   {
-    "name": "fn_add_numbers",
-    "description": "Add two numbers. Return sum.",
-    "parameters": {
-      "a": {"type": "number"},
-      "b": {"type": "number"}
-    },
-    "returns": {"type": "number"}
-  },
-  {
     "name": "fn_multiply_numbers",
     "description": "Multiply two numbers. Return product.",
     "parameters": {
