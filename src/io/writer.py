@@ -31,6 +31,8 @@ class Writer:
 
             except ValidationError as e:
                 print(f"ValidationError: Invalid result {e}")
+            except Exception as e:
+                print(f"Error: {e}")
 
         with open(self.output_path, 'w') as f:
             json.dump(validated, f, indent=4)

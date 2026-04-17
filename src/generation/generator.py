@@ -27,22 +27,25 @@ class Generator:
         self.vocab = Vocabulary(self.llm)
         self.output = output
         self.final_result: list[dict[str, Any]] = []
-
-    def _build_function_prompt(self, user_request: PromptSchema) -> str:
-        fn_list = "\n".join([
-            f"- {fn.name}: {fn.description}"
+        self.fn_list = "\n".join([
+            f"- {fn.name} {fn.description}"
             for fn in self.functions
         ])
-        return (
-           "<|im_start|>system"
-            "You are function-calling assistant.\n"
-            "You must choose the right function and extract"
-            " its parameters from the user request.\n"
-            "List of the functions and their description:\n"
-            f"{fn_list}.\n"
-           "<|im_end|>system"
 
-           "<|im_start|>assistant"
+    def _build_function_prompt(self, user_request: PromptSchema) -> str:
+        return (
+            "<|im_start|>system\n"
+            "You are function-calling assistant.\n"
+            "You must choose the right function and extract "
+            "the right parameters from the user request."
+            f"{self.fn_list}.\n"
+            "<|im_end|>\n"
+
+            "<|im_start|>user\n"
+            f"{user_request}\n"
+            "<|im_end|>\n"
+
+            "<|im_start|>assistant\n"
         )
 
     def _build_parameters_prompt(self, user_request: PromptSchema) -> str:
@@ -51,17 +54,21 @@ class Generator:
         param_done_str = ", ".join([
             f'{k}="{v}"' for k, v in self.state_machine.params_done.items()
         ])
-        fn_list = "\n".join([
-            f"- {fn.name}: {fn.description}"
-            for fn in self.functions
-        ])
         return (
+            "<|im_start|>system\n"
             "You are function-calling assistant.\n"
-            "You must choose the rigth function and extract"
-            " its parameters from the user request."
-            "List of the functions and their description:\n"
-            f"{fn_list}.\n"
-            f"{fn.name} ({param_done_str} {param}=\""
+            f"{self.fn_list}.\n"
+            "RULES:\n"
+            "- regex parameter must be a valid regex.\n"
+            "- replacement parameter must be valids.\n"
+            "<|im_end|>\n"
+
+            "<|im_start|>user\n"
+            f"{user_request}\n"
+            "<|im_end|>\n"
+
+            "<|im_start|>assistant\n"
+            f"{fn.name}\n(parameters: {param_done_str} {param}=\""
             f"{self.state_machine.str_parser.result}"
         )
 
@@ -81,7 +88,6 @@ class Generator:
             new_input = self._build_function_prompt(user_request) + answer
             input_ids = self.llm.encode(new_input).tolist()[0]
 
-        print(f"\n{new_input}")
         return input_ids
 
     def generate(self, prompt: PromptSchema) -> None:

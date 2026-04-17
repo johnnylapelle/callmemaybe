@@ -27,6 +27,7 @@ class StateNum(Enum):
 class StateStr(Enum):
     QUOTE = auto()
     CHARACTERS = auto()
+    REGEX = auto()
     ESCAPE = auto()
     END = auto()
 
