@@ -1,7 +1,8 @@
+import re
+
 from ..models.models_class import TypeParserModel
 from .state import StateStr
 from .vocabulary import Vocabulary
-import re
 
 
 class StringParser():

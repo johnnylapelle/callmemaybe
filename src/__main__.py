@@ -12,6 +12,12 @@ from .io.writer import Writer
 
 
 def performance(start_time: float, token_count: int) -> None:
+    """Print performance metrics for the generation run.
+
+    Args:
+        start_time: Timestamp from time.perf_counter() at the start of execution.
+        token_count: Total number of tokens generated.
+    """
     end_time = time.perf_counter()
     duration = end_time - start_time
     tps = token_count / duration if duration > 0 else 0
@@ -23,6 +29,16 @@ def performance(start_time: float, token_count: int) -> None:
 
 
 def main() -> None:
+    """Entry point for the call-me-maybe constrained decoding pipeline.
+
+    Parses CLI arguments, loads prompts and function schemas, runs the
+    constrained generation loop, writes results, and prints performance metrics.
+
+    Raises:
+        ValidationError: If any input data fails Pydantic schema validation.
+        ValueError: If input files are invalid or missing required fields.
+        Exception: For any other unexpected runtime error.
+    """
     try:
         start_time = time.perf_counter()
         token_count = 0
@@ -33,7 +49,6 @@ def main() -> None:
         parser = Parser(args)
         reader = Reader(parser.files)
 
-        prompts = reader.get_prompts()
         functions = reader.get_functions()
         prompts = reader.get_prompts()
         output_path = reader.get_output_path()
@@ -57,9 +72,10 @@ def main() -> None:
     except ValidationError as e:
         print(f"ValidationError: {e}")
     except ValueError as e:
-        print(f"ValueError: {e}")
+        print(f"{e}")
     except Exception as e:
         print(f"Error: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
