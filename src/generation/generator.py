@@ -15,20 +15,22 @@ from .vocabulary import Vocabulary
 class Generator:
     def __init__(self, llm: Small_LLM_Model,
                  functions: list[FunctionSchema],
-                 output: str):
+                 output: str, token_count: int | None):
 
         GeneratorModel(
             llm=llm,
             functions=functions,
-            output=output)
+            output=output,
+            token_count=token_count)
 
+        self.token_count = token_count
         self.llm = llm
         self.functions = functions
         self.vocab = Vocabulary(self.llm)
         self.output = output
         self.final_result: list[dict[str, Any]] = []
         self.fn_list = "\n".join([
-            f"- {fn.name} {fn.description}"
+            f"- {fn.name}"
             for fn in self.functions
         ])
 
@@ -56,11 +58,10 @@ class Generator:
         ])
         return (
             "<|im_start|>system\n"
-            "You are function-calling assistant.\n"
-            f"{self.fn_list}.\n"
+            # "You are function-calling assistant.\n"
+            f"{fn.name} {fn.parameters}.\n"
             "RULES:\n"
             "- regex parameter must be a valid regex.\n"
-            "- replacement parameter must be valids.\n"
             "<|im_end|>\n"
 
             "<|im_start|>user\n"
@@ -68,7 +69,7 @@ class Generator:
             "<|im_end|>\n"
 
             "<|im_start|>assistant\n"
-            f"{fn.name}\n(parameters: {param_done_str} {param}=\""
+            f"(parameters: {param_done_str} {param}=\""
             f"{self.state_machine.str_parser.result}"
         )
 
@@ -90,7 +91,7 @@ class Generator:
 
         return input_ids
 
-    def generate(self, prompt: PromptSchema) -> None:
+    def generate(self, prompt: PromptSchema) -> int | None:
         self.state_machine = StateMachine(self.llm,
                                           prompt,
                                           self.functions)
@@ -119,6 +120,9 @@ class Generator:
             next_token = int(np.argmax(np_logits))
             token_decoded = self.llm.decode([next_token])
 
+            if isinstance(self.token_count, int):
+                self.token_count += 1
+
             # transition the state_machine and print the token
             self.state_machine.transition(token_decoded)
             print(token_decoded, end="", flush=True)
@@ -131,3 +135,4 @@ class Generator:
 
         # append the result of the current prompt to the final result
         self.final_result.append(self.state_machine.result)
+        return self.token_count

@@ -18,7 +18,7 @@ class StringParser():
         self.char_count = 0
 
         self.re_regex = re.compile(r'^[a-zA-Z0-9\\\"]+$')
-        self.re_chars = re.compile(r"^[a-zA-Z0-9\sĠ .,!?;:()'\-_+=&{}$*\\]+$")
+        self.re_chars = re.compile(r"^[a-zA-Z0-9\sĠ .,!?;:()'\-_+=&{}$*\\/]+$")
 
     def transition(self, token: str, curr_param: str) -> bool:
         if token != '"':
@@ -60,7 +60,7 @@ class StringParser():
 
         elif self.state == StateStr.CHARACTERS:
             valid_ids = [id for token, id in self.vocab.vocab.items()
-                         if (self.re_chars.match(token) and '"”' not in token)
+                         if (self.re_chars.match(token) and '"' not in token)
                          or token == '"']
 
         elif self.state == StateStr.REGEX:
