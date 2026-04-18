@@ -4,8 +4,26 @@ from .vocabulary import Vocabulary
 
 
 class NumberParser():
-    def __init__(self, vocab: Vocabulary):
+    """Parses numeric parameter values token by token using a FSM.
 
+    Handles integers, floats, and scientific notation following the JSON
+    number specification. Generation ends when a closing quote or comma
+    is encountered.
+
+    Attributes:
+        state: Current FSM state.
+        vocab: Vocabulary instance used for token filtering.
+        result: Accumulated numeric string, excluding quotes and commas.
+        digits_count: Counter to enforce the maximum digit limit.
+        max_digits: Maximum number of digits allowed before forcing END.
+    """
+
+    def __init__(self, vocab: Vocabulary):
+        """Initialize NumberParser and validate inputs.
+
+        Args:
+            vocab: Vocabulary instance used for token filtering.
+        """
         TypeParserModel(
             vocab=vocab
         )
@@ -18,6 +36,14 @@ class NumberParser():
         self.max_digits = 10
 
     def transition(self, token: str) -> bool:
+        """Process a token and advance the FSM state.
+
+        Args:
+            token: The decoded token string to process.
+
+        Returns:
+            True if the number is complete, False otherwise.
+        """
         if token not in ',"':
             self.result += token
 
@@ -87,6 +113,12 @@ class NumberParser():
         return False
 
     def get_valid_ids(self) -> list[int]:
+        """Return the list of valid token ids for the current FSM state.
+
+        Returns:
+            List of valid token ids based on the current state,
+            following the JSON number specification.
+        """
         valid_ids: list[int] = []
 
         if self.state == StateNum.QUOTE:
@@ -141,5 +173,7 @@ class NumberParser():
         return valid_ids
 
     def reset(self) -> None:
+        """Reset the parser to its initial state for reuse."""
         self.result = ""
         self.state = StateNum.QUOTE
+        self.digits_count = 0
