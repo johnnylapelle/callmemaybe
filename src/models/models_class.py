@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from llm_sdk.llm_sdk import Small_LLM_Model
 
@@ -43,3 +43,4 @@ class GeneratorModel(BaseModel):
     llm: Small_LLM_Model
     functions: list[FunctionSchema]
     output: str
+    token_count: int | None = Field(default=None)

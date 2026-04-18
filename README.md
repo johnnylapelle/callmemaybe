@@ -65,8 +65,33 @@ The algorithm initializes a list of **potential candidates** containing every av
 - With each selected token, the list narrows. If a function name no longer matched the generated prefix, it is removed from the eligible pool until one valid function remains.
 
 ### Generation of the parameters
-Once the name is resolved, the algorithm transitions to generating the parameters. Depending on the type of the parameter, the system switches between the specific FSMs (Number, String, Array) to ensure the generated values strictly adhere to the expected JSON format and data types.
-Each FSM are built in a way to respect the JSON structure. Using theses schemes: https://www.json.org/json-en.html
+Once the name is resolved, the algorithm transitions to **generating the parameters**. Depending on the type of the parameter, the system switches between the specific FSMs (Number, String, Array) to ensure the generated values strictly adhere to the expected JSON format and data types.
+Each FSM are built in a way to respect the **JSON structure**. Using theses schemes: https://www.json.org/json-en.html
+
+**String parameters** are constrained to English characters only, effectively blocking Cyrillic, Chinese, or other non-ASCII scripts.
+
+### Prompt Engineering Strategy
+**Instructional Framing**: Uses ```<|im_start|> / <|im_end|>``` tags to define roles to maintain context.
+``` python
+"<|im_start|>system\n"
+"You are function-calling assistant.\n"
+f"{self.fn_list}.\n"
+"RULES:\n"
+"- regex parameter must be a valid regex.\n"
+"- replacement parameter must be valids.\n"
+"<|im_end|>\n"
+
+"<|im_start|>user\n"
+f"{user_request}\n"
+"<|im_end|>\n"
+
+"<|im_start|>assistant\n"
+f"{fn.name}\n(parameters: {param_done_str} {param}=\""
+f"{self.state_machine.str_parser.result}"
+```
+
+**Technical rules**: To reinforce the generation of valid name and paramters.\
+**Guided completion**: By adding ```param=```, the program forces the assistant to generate the value immediatly.
 
 ## Design decisions
 ### Modular architecture
@@ -76,11 +101,52 @@ The architecture follows a **strictly modular, object-oriented design, assigning
 Choosing a **Finite-State Machine (FSM)** ensures maximum precision by enforcing strict constraints at every step. This approach provides superior traceability throughout the generation process and simplifies the integration of future features through a structured, state-driven workflow.
 
 ## Performance analysis
+### Benchmark
+*1 function definition and 10 prompts:*
+```
+Performance:
+Total time: 32.02s
+Token generated: 698
+Speed: 21.799885 tokens/sec
+```
+
+*5 functions definitions and 10 prompts:*
+```
+Performance:
+Total time: 56.90s
+Token generated: 715
+Speed: 12.565821 tokens/sec
+```
+
+*10 functions definitions and 22 prompts:*
+```
+Performance:
+Total time: 139.37s
+Token generated: 4178
+Speed: 29.978070 tokens/sec
+```
+
+- **Speed & Latency**: Testing shows a direct correlation between context size and generation speed. With a single function definition, the system reaches ~22 tokens/sec. However, increasing the prompt complexity (e.g., 5+ functions) without KV Caching drops the speed to ~12 tokens/sec due to the linear increase in attention re-computation.
+
+- **Reliability vs. Complexity**:
+
+	- **Simple extractions**: The system achieves 100% structural reliability; the FSM effectively prevents any JSON formatting errors.
+
+	- **Complex Logic (Regex/SQL)**: While the FSM guarantees a valid format, small-scale models (0.6B) struggle with semantic accuracy in complex syntax. The "Reasoning Gap" of the model sometimes leads to technically valid but logically incorrect strings (e.g., missing brackets in regex) when the model's preferred tokens are masked by the FSM.
+
+- **Scalability**: The solution is ideal for high-speed, simple data extraction but requires prompt-minimization strategies (like narrowing the function list) to maintain performance on larger datasets.
+
 
 ## Challenges faced
 
 - **Optimising the mask**:
 To optimize the decoding process, the system uses NumPy vectorization to apply constraints across the entire vocabulary simultaneously. By treating the token set as a single mathematical block rather than using slow Python loops, the algorithm initializes a global penalty vector and uses direct array indexing to instantly suppress unauthorized tokens. This makes the FSM-driven filtering computationally efficient, ensuring that strict syntax enforcement never bottlenecks the LLM's generation speed.
+
+- **Ensuring Precise Parameter Generation**: To guarantee that each parameter type is correctly formatted, the program utilizes a Finite State Machine (FSM). At each step of the generation, the system identifies the current state and triggers transitions based on the LLM's token selection.
+
+	- Deterministic Logic: For example, when generating numbers, if the LLM starts with 0, the FSM transitions to the AFTER_INT state. This state strictly limits the next allowed tokens to characters valid after a zero (such as '.', 'E', or 'e').
+
+	- Strict JSON Compliance: By following these state-driven rules, the program effectively "prunes" the model's vocabulary in real-time, ensuring that every generated value is perfectly valid within the JSON format.
 
 ### Limitations faced
 **Negative Numbers**: The model occasionally struggles with the leading minus sign or the logic required to transition into a negative numerical state accurately.
@@ -89,8 +155,9 @@ To optimize the decoding process, the system uses NumPy vectorization to apply c
 
 **Hallucination**: Even with constrained decoding, the model may still attempt to generate "plausible-sounding" but incorrect parameters if the prompt context is ambiguous or outside its training knowledge.
 
-### Ideas
-For constraining the regex i came up with an idea:\
+### Some Ideas
+#### Prompt decomposition
+For constraining the regex i came up with an idea that i did not implement:\
 Let the LLM rephrase the prompt in a way that is syntactically parsable.
 Indentify the request and constrained the right pattern. While this ensures high reliability for simple patterns, it remains a limited approach for more complex expressions.
 
@@ -107,7 +174,7 @@ else:
 
 ## Testing strategy
 ## Example usage
-We need a **functions_definition.json** file:
+- We need a **functions_definition.json** file with at least one definition:
 ```json
 {
 "name": "fn_add_numbers",
@@ -126,14 +193,14 @@ We need a **functions_definition.json** file:
 }
 ```
 
-And a **function_calling.json** file:
+- And a **function_calling.json** file with at least one prompt:
 ```json
 {
 "prompt": "What is the sum of 0.2 and 3?"
 }
 ```
 
-The program will process the prompt and constrains the output to match ```fn_add_numbers``` definition into an **output JSON file**:
+- The program will process the prompt and constrains the output to match ```fn_add_numbers``` definition into an **output JSON file**:
 
 ```json
 {

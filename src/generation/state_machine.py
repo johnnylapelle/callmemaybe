@@ -62,7 +62,7 @@ class StateMachine():
                 self._setup_next_param_or_end()
 
         elif self.state == State.VALUE_PARAM_STR:
-            done = self.str_parser.transition(token)
+            done = self.str_parser.transition(token, self.curr_param)
             if done:
                 self._setup_next_param_or_end()
 
