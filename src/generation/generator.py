@@ -103,21 +103,22 @@ class Generator:
         input_ids = self.llm.encode(full_prompt).tolist()[0]
 
         while not self.state_machine.is_it_the_end():
-            # get the logits from the input_ids
-            logits = self.llm.get_logits_from_input_ids(input_ids)
-
             # get the valid_ids
             valid_ids = self.state_machine.get_valid_ids()
 
             if valid_ids is None:
                 self.state_machine.transition("")
                 continue
+            elif len(valid_ids) == 1:
+                next_token = valid_ids[0]
+            else:
+                # get the logits from the input_ids
+                logits = self.llm.get_logits_from_input_ids(input_ids)
+                # filter the logits to -inf
+                np_logits = self._filter_logits(logits, valid_ids)
+                # get the next token and decode it
+                next_token = int(np.argmax(np_logits))
 
-            # filter the logits to -inf
-            np_logits = self._filter_logits(logits, valid_ids)
-
-            # get the next token and decode it
-            next_token = int(np.argmax(np_logits))
             token_decoded = self.llm.decode([next_token])
 
             if isinstance(self.token_count, int):
