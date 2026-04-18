@@ -27,7 +27,7 @@ make debug
 ```
 
 ## Resources
-### Divers
+### Miscellaneous
 - https://www.geeksforgeeks.org/artificial-intelligence/what-is-a-production-system-in-ai/
 - https://aiproductivity.ai/news/caveman-prompting-claude-75-percent-fewer-tokens/
 - https://qwen.readthedocs.io/en/latest/getting_started/concepts.html
