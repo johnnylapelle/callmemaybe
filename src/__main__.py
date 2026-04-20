@@ -16,7 +16,8 @@ def performance(start_time: float, token_count: int) -> None:
     """Print performance metrics for the generation run.
 
     Args:
-        start_time: Timestamp from time.perf_counter() at the start of execution.
+        start_time: Timestamp from time.perf_counter()
+          at the start of execution.
         token_count: Total number of tokens generated.
     """
     end_time = time.perf_counter()
@@ -32,8 +33,10 @@ def performance(start_time: float, token_count: int) -> None:
 def main() -> None:
     """Entry point for the call-me-maybe constrained decoding pipeline.
 
-    Parses CLI arguments, loads prompts and function schemas, runs the
-    constrained generation loop, writes results, and prints performance metrics.
+    Parses CLI arguments, loads prompts
+      and function schemas, runs the
+    constrained generation loop, writes results,
+      and prints performance metrics.
 
     Raises:
         ValidationError: If any input data fails Pydantic schema validation.
@@ -46,6 +49,7 @@ def main() -> None:
 
         args = sys.argv
 
+        # llm = Small_LLM_Model(model_name="Qwen/Qwen3-1.7B")
         llm = Small_LLM_Model()
         parser = Parser(args)
         reader = Reader(parser.files)

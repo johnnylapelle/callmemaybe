@@ -13,19 +13,23 @@ from .vocabulary import Vocabulary
 
 
 class Generator:
-    """Orchestrates the constrained decoding loop for function-calling generation.
+    """Orchestrates the constrained decoding loop
+      for function-calling generation.
 
     Manages prompt construction, logit filtering, and state machine transitions
     to produce structured JSON output token by token.
 
     Attributes:
-        token_count: Running total of tokens generated, used for performance tracking.
+        token_count: Running total of tokens generated,
+          used for performance tracking.
         llm: The language model instance.
         functions: List of available function schemas.
         vocab: Vocabulary instance for token filtering.
         output: Path to the output file.
-        final_result: Accumulated list of generation results across all prompts.
-        fn_list: Formatted string listing available function names for the prompt.
+        final_result: Accumulated list of generation
+          results across all prompts.
+        fn_list: Formatted string listing available
+          function names for the prompt.
     """
 
     def __init__(self, llm: Small_LLM_Model,
@@ -83,14 +87,17 @@ class Generator:
     def _build_parameters_prompt(self, user_request: PromptSchema) -> str:
         """Build the prompt used during string parameter generation.
 
-        Provides the LLM with the chosen function signature and already-generated
-        parameters to guide the generation of the current parameter value.
+        Provides the LLM with the chosen function
+          signature and already-generated
+        parameters to guide the generation
+          of the current parameter value.
 
         Args:
             user_request: The user prompt being processed.
 
         Returns:
-            Formatted prompt string with function context and partial parameters.
+            Formatted prompt string with function
+              context and partial parameters.
         """
         fn = self.state_machine.chosen_fn
         param = self.state_machine.curr_param
@@ -155,14 +162,16 @@ class Generator:
         """Run the constrained decoding loop for a single prompt.
 
         Iterates token by token, applying FSM constraints at each step.
-        Skips the LLM forward pass when only one valid token exists (jump-forward).
+        Skips the LLM forward pass when only
+          one valid token exists (jump-forward).
         Appends the result to final_result upon completion.
 
         Args:
             prompt: The user prompt to process.
 
         Returns:
-            Updated token count after generation, or None if token_count was None.
+            Updated token count after generation,
+              or None if token_count was None.
         """
         self.state_machine = StateMachine(self.llm,
                                           prompt,
@@ -193,7 +202,7 @@ class Generator:
 
             # decode the next_token
             token_decoded = (self.vocab.vocab_inv.get(next_token)
-                             or self.llm.decode(next_token))
+                             or self.llm.decode([next_token]))
 
             if isinstance(self.token_count, int):
                 self.token_count += 1

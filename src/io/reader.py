@@ -11,7 +11,8 @@ class Reader():
 
     Args:
         files: Dict mapping CLI flags to file paths.
-            Expected keys: ``--functions_definition``, ``--input``, ``--output``.
+            Expected keys: ``--functions_definition``,
+              ``--input``, ``--output``.
     """
 
     def __init__(self, files: dict[str, str]) -> None:
@@ -27,7 +28,8 @@ class Reader():
         self.files = files
 
     def get_functions(self) -> list[FunctionSchema]:
-        """Load and validate function schemas from the functions definition file.
+        """Load and validate function schemas from
+          the functions definition file.
 
         Returns:
             List of validated FunctionSchema objects.

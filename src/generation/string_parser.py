@@ -18,8 +18,10 @@ class StringParser():
         result: Accumulated generated string, excluding the opening quote.
         max_token: Maximum number of tokens before forcing END.
         char_count: Counter to enforce the maximum token limit.
-        re_regex: Pre-compiled regex to filter vocabulary for regex-mode generation.
-        re_chars: Pre-compiled regex to filter vocabulary for free string generation.
+        re_regex: Pre-compiled regex to
+          filter vocabulary for regex-mode generation.
+        re_chars: Pre-compiled regex to
+          filter vocabulary for free string generation.
     """
 
     def __init__(self, vocab: Vocabulary):

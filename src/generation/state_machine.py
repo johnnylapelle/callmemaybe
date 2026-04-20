@@ -42,7 +42,8 @@ class StateMachine():
                  functions: list[FunctionSchema]):
         """Initialize StateMachine and validate inputs.
 
-        Pre-computes function name tokenizations for efficient candidate filtering.
+        Pre-computes function name tokenizations
+          for efficient candidate filtering.
 
         Args:
             llm: The language model instance.
@@ -159,11 +160,12 @@ class StateMachine():
             ids = self.llm.encode(fn.name).tolist()[0]
             tokenized[fn.name] = []
             for id in ids:
-                tokenized[fn.name].append(self.llm.decode(id))
+                tokenized[fn.name].append(self.llm.decode([id]))
         return tokenized
 
     def _get_state_for_types(self) -> None:
-        """Transition to the appropriate parameter state based on param_type."""
+        """Transition to the appropriate parameter
+          state based on param_type."""
         match self.param_type:
             case "number":
                 self.state = State.VALUE_PARAM_NUMBER

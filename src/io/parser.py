@@ -59,7 +59,8 @@ class Parser():
     def validates_files(self) -> None:
         """Validate that file paths have .json extension and exist on disk.
 
-        Only ``--functions_definition`` and ``--input`` are checked for existence
+        Only ``--functions_definition`` and
+          ``--input`` are checked for existence
         since the output file is created at runtime.
 
         Raises:
@@ -72,4 +73,4 @@ class Parser():
             if file_path.suffix != '.json':
                 raise ValueError(f"'{v}' is not a .json file.")
             if k in must_exist and not file_path.is_file():
-                    raise ValueError(f"'{v}' unknown file.")
+                raise ValueError(f"'{v}' unknown file.")

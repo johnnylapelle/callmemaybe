@@ -9,14 +9,16 @@ class TypeDef(BaseModel):
     """Represents a type definition for a function parameter or return value.
 
     Attributes:
-        type: The allowed type, restricted to number, string, boolean, integer, or array.
+        type: The allowed type, restricted to number,
+          string, boolean, integer, or array.
     """
     model_config = {"extra": "forbid"}
     type: AllowedType
 
 
 class FunctionSchema(BaseModel):
-    """Schema for a function definition loaded from the functions definition file.
+    """Schema for a function definition
+      loaded from the functions definition file.
 
     Attributes:
         name: The function identifier used during generation.

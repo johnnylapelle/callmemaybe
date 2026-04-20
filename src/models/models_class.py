@@ -41,7 +41,8 @@ class WriterModel(BaseModel):
 
 
 class TypeParserModel(BaseModel):
-    """Validation model for type parser inputs (NumberParser, StringParser, ArrayParser).
+    """Validation model for type parser inputs
+      (NumberParser, StringParser, ArrayParser).
 
     Attributes:
         vocab: The Vocabulary instance used for token filtering.
