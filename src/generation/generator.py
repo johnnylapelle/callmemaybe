@@ -71,9 +71,7 @@ class Generator:
         """
         return (
             "<|im_start|>system\n"
-            "You are function-calling assistant.\n"
-            "You must choose the right function and extract "
-            "the right parameters from the user request."
+            "Function calling-assistant.\n"
             f"{self.fn_list}.\n"
             "<|im_end|>\n"
 

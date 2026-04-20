@@ -224,7 +224,7 @@ class StateMachine():
             case "string":
                 result = self.str_parser.result
                 self.result["parameters"][self.curr_param] = (
-                    result.strip())
+                    result.strip().replace("\\\\", "\\"))
             case "array":
                 result = self.array_parser.result
                 self.result["parameters"][self.curr_param] = ast.literal_eval(
