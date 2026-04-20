@@ -1,6 +1,8 @@
 *This project has been created as part of the 42 curriculum by jvacossi.*
+
 # Call Me Maybe
 ![](assets/banner.jpg)
+
 ## Description
 Call Me Maybe is a **constrained decoding project**. The objective is to use an **LLM (Qwen3-0.6B)** as **function-calling assistant** to generate a valid json file, containing the **prompt**, the correct **function name** and its **parameters** based on a functions definition lists:
 ```json

@@ -20,3 +20,6 @@ clean:
 	rm -rf .mypy_cache
 	rm -rf .vscode
 	find . -type d -name "__pycache__" -exec rm -rf {} +
+
+debug:
+	uv run python -m pdb src/__main__.py
