@@ -6,7 +6,7 @@ install:
 	uv sync
 
 run:
-	uv run --env-file .env python -m src
+	uv run python -m src
 
 lint:
 	$(FLAKE8) src/
