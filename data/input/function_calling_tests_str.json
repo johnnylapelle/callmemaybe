@@ -1,6 +1,6 @@
 [
   {
-    "prompt": "Greet shrek"
+    "prompt": "Greet olivia"
   },
   {
     "prompt": "Greet john"
@@ -19,5 +19,14 @@
   },
   {
     "prompt": "Substitute the word 'cat' with 'dog' in 'The cat sat on the mat with another cat'"
+  },
+  {
+    "prompt": "Replace the word 'Paris' with 'Venise' in 'Paris is the capital of France'"
+  },
+  {
+    "prompt": "Substitute the word 'cat' with 'dog' in 'The cat sat on the mat with another cat'"
+  },
+  {
+	"prompt": "Say hello to omar"
   }
 ]
