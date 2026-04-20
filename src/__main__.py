@@ -1,5 +1,6 @@
 import sys
 import time
+import traceback
 
 from pydantic import ValidationError
 
@@ -70,14 +71,17 @@ def main() -> None:
         performance(start_time, token_count)
 
     except ValidationError as e:
+        tb = traceback.extract_tb(e.__traceback__)[-1]
         print(f"ValidationError: {e}")
+        print(f"in {tb.filename}, line {tb.lineno} in {tb.name}")
     except ValueError as e:
-        print(f"{e}")
+        tb = traceback.extract_tb(e.__traceback__)[-1]
+        print(f"ValueError: {e}")
+        print(f"in {tb.filename}, line {tb.lineno} in {tb.name}")
     except Exception as e:
+        traceback.print_exc()
         print(f"Error: {e}")
         sys.exit(1)
-
-    print(prompt)
 
 
 if __name__ == "__main__":

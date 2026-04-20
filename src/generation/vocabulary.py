@@ -30,6 +30,8 @@ class Vocabulary:
         with open(self.llm.get_path_to_vocab_file(), 'r') as f:
             self.vocab = json.load(f)
 
+        self.vocab_inv = {id: token for id, token in self.vocab.items()}
+
     def get_ids_for(self, tokens: list[str]) -> list[int]:
         """Return the token ids corresponding to a list of token strings.
 
@@ -48,21 +50,3 @@ class Vocabulary:
                 raise ValueError(f"token '{token}' id not found")
             ids.append(self.vocab[token])
         return ids
-
-    def get_token(self, id: int) -> str:
-        """Decode a token id back to its string representation.
-
-        Args:
-            id: The integer token id to decode.
-
-        Returns:
-            The decoded token string.
-
-        Raises:
-            ValueError: If the id cannot be decoded.
-        """
-        try:
-            token = self.llm.decode([id])
-        except Exception:
-            raise ValueError(f"'{id}' token not found.")
-        return token

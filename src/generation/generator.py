@@ -191,7 +191,9 @@ class Generator:
                 # get the next token and decode it
                 next_token = int(np.argmax(np_logits))
 
-            token_decoded = self.llm.decode([next_token])
+            # decode the next_token
+            token_decoded = (self.vocab.vocab_inv.get(next_token)
+                             or self.llm.decode(next_token))
 
             if isinstance(self.token_count, int):
                 self.token_count += 1

@@ -216,6 +216,8 @@ else:
 ```
 
 ## Testing strategy
+- **Unit Testing**: The implementation was validated by running the pipeline against a dataset of prompts covering various edge cases and parameter types.
+- **Schema Validation**: Every generated output is automatically validated against the expected JSON structure. The test fails if the output cannot be parsed or does not match the schema.
 ## Example usage
 - We need a **functions_definition.json** file with at least one definition:
 ```json
