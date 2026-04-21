@@ -104,7 +104,7 @@ class Generator:
         ])
         arg_context = ""
         for k, v in fn.parameters.items():
-            arg_context += f"argument name={k} type={v.type}"
+            arg_context += f"argument_name={k} type={v.type}"
         return (
             "<|im_start|>system\n"
             "Extract intact argument from request\n"
@@ -114,7 +114,7 @@ class Generator:
             "<|im_end|>"
 
             "<|im_start|>assistant\n" \
-            f"{param}={self.state_machine}"
+            f"{param}={self.state_machine.str_parser.result}"
         )
 
     def _filter_logits(self, logits: list[float],
