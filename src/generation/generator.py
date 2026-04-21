@@ -102,20 +102,19 @@ class Generator:
         param_done_str = ", ".join([
             f'{k}="{v}"' for k, v in self.state_machine.params_done.items()
         ])
+        arg_context = ""
+        for k, v in fn.parameters.items():
+            arg_context += f"argument name={k} type={v.type}"
         return (
             "<|im_start|>system\n"
-            f"{fn.name} {fn.parameters}.\n"
-            "RULES:\n"
-            "- regex parameter must be a valid regex.\n"
-            "<|im_end|>\n"
+            "Extract intact argument from request\n"
+            f"Function name={fn.name}\n"
+            f"Request={user_request}\n"
+            f"Arguments={arg_context}\n"
+            "<|im_end|>"
 
-            "<|im_start|>user\n"
-            f"{user_request}\n"
-            "<|im_end|>\n"
-
-            "<|im_start|>assistant\n"
-            f"(parameters: {param_done_str} {param}=\""
-            f"{self.state_machine.str_parser.result}"
+            "<|im_start|>assistant\n" \
+            f"{param}={self.state_machine}"
         )
 
     def _filter_logits(self, logits: list[float],
@@ -154,6 +153,7 @@ class Generator:
             new_input = self._build_function_prompt(user_request) + answer
             input_ids = self.llm.encode(new_input).tolist()[0]
 
+        print(new_input)
         return input_ids
 
     def generate(self, prompt: PromptSchema) -> int | None:
