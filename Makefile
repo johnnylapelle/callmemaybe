@@ -5,10 +5,13 @@ FLAGS = --warn-return-any --warn-unused-ignores --ignore-missing-imports --disal
 install:
 	uv sync
 
-run:
+run: install
 	uv run python -m src
 
-lint:
+debug: install
+	uv run python -m pdb src/__main__.py
+
+lint: install
 	$(FLAKE8) src/
 	$(MYPY) $(FLAGS) src/
 
@@ -20,6 +23,3 @@ clean:
 	rm -rf .mypy_cache
 	rm -rf .vscode
 	find . -type d -name "__pycache__" -exec rm -rf {} +
-
-debug:
-	uv run python -m pdb src/__main__.py
