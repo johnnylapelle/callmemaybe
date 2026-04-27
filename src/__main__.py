@@ -12,7 +12,7 @@ from .io.reader import Reader
 from .io.writer import Writer
 
 
-def performance(start_time: float, token_count: int) -> None:
+def performance(start_time: float, token_count: int, nb_prompt: int) -> None:
     """Print performance metrics for the generation run.
 
     Args:
@@ -23,11 +23,13 @@ def performance(start_time: float, token_count: int) -> None:
     end_time = time.perf_counter()
     duration = end_time - start_time
     tps = token_count / duration if duration > 0 else 0
+    avg_time = duration / nb_prompt if nb_prompt > 0 else 0
 
     print("Performance:")
     print(f"Total time: {duration:.2f}s")
     print(f"Token generated: {token_count}")
-    print(f"Speed: {tps:2f} tokens/sec")
+    print(f"Speed: {tps:.2f} tokens/sec")
+    print(f"Average time per prompt: {avg_time:.2f}sec")
 
 
 def main() -> None:
@@ -58,21 +60,18 @@ def main() -> None:
         prompts = reader.get_prompts()
         output_path = reader.get_output_path()
 
-        generator = Generator(llm, functions, output_path, token_count)
+        generator = Generator(llm, functions, output_path)
         results = generator.final_result
 
         for i, prompt in enumerate(prompts):
             print(f"- PROMPT {i + 1}:")
-            result_token_count = generator.generate(prompt)
-
-            if isinstance(result_token_count, int):
-                token_count += result_token_count
+            token_count += generator.generate(prompt)
 
         # valid the results and write them
         writer = Writer(results, output_path)
         writer.write()
 
-        performance(start_time, token_count)
+        performance(start_time, token_count, i)
 
     except ValidationError as e:
         tb = traceback.extract_tb(e.__traceback__)[-1]

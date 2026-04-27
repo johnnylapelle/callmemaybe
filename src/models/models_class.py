@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 from llm_sdk.llm_sdk import Small_LLM_Model
 
@@ -85,11 +85,9 @@ class GeneratorModel(BaseModel):
         llm: The language model instance.
         functions: List of available function schemas.
         output: Path to the output file.
-        token_count: Optional initial token count for performance tracking.
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
     llm: Small_LLM_Model
     functions: list[FunctionSchema]
     output: str
-    token_count: int | None = Field(default=None)

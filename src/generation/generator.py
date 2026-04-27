@@ -34,22 +34,20 @@ class Generator:
 
     def __init__(self, llm: Small_LLM_Model,
                  functions: list[FunctionSchema],
-                 output: str, token_count: int | None):
+                 output: str):
         """Initialize Generator and validate inputs.
 
         Args:
             llm: The language model instance.
             functions: List of available function schemas.
             output: Path to the output file.
-            token_count: Optional initial token count for performance tracking.
         """
         GeneratorModel(
             llm=llm,
             functions=functions,
-            output=output,
-            token_count=token_count)
+            output=output)
 
-        self.token_count = token_count
+        self.token_count = 0
         self.llm = llm
         self.functions = functions
         self.vocab = Vocabulary(self.llm)
@@ -71,7 +69,7 @@ class Generator:
         """
         return (
             "<|im_start|>system\n"
-            "Function calling-assistant.\n"
+            # "Function calling-assistant.\n"
             f"{self.fn_list}.\n"
             "<|im_end|>\n"
 
@@ -105,8 +103,6 @@ class Generator:
         return (
             "<|im_start|>system\n"
             f"{fn.name} {fn.parameters}.\n"
-            # "RULES:\n"
-            # "- regex parameter must be a valid regex.\n"
             "<|im_end|>\n"
 
             "<|im_start|>user\n"
@@ -147,7 +143,8 @@ class Generator:
         Returns:
             List of token ids to pass to the LLM on the next step.
         """
-        if self.state_machine.state == State.VALUE_PARAM_STR:
+        if (self.state_machine.state == State.VALUE_PARAM_STR
+           or self.state_machine.state == State.VALUE_PARAM_STR):
             new_input = self._build_parameters_prompt(user_request)
             input_ids = self.llm.encode(new_input).tolist()[0]
         else:
@@ -156,7 +153,7 @@ class Generator:
 
         return input_ids
 
-    def generate(self, prompt: PromptSchema) -> int | None:
+    def generate(self, prompt: PromptSchema) -> int:
         """Run the constrained decoding loop for a single prompt.
 
         Iterates token by token, applying FSM constraints at each step.
@@ -181,6 +178,9 @@ class Generator:
         full_prompt = self._build_function_prompt(prompt)
         input_ids = self.llm.encode(full_prompt).tolist()[0]
 
+        print("- GENERATION:")
+        self.token_count = 0
+
         while not self.state_machine.is_it_the_end():
             # get the valid_ids
             valid_ids = self.state_machine.get_valid_ids()
@@ -202,8 +202,7 @@ class Generator:
             token_decoded = (self.vocab.vocab_inv.get(next_token)
                              or self.llm.decode([next_token]))
 
-            if isinstance(self.token_count, int):
-                self.token_count += 1
+            self.token_count += 1
 
             # transition the state_machine and print the token
             self.state_machine.transition(token_decoded)
@@ -214,7 +213,7 @@ class Generator:
             input_ids = self._get_prompt(answer, prompt)
             # print(self.llm.decode(input_ids))
 
-        print("\n\nGenerated JSON:\n", self.state_machine.result, "\n\n\n")
+        print("\n\nGENERATED JSON:\n", self.state_machine.result, "\n\n\n")
 
         # append the result of the current prompt to the final result
         self.final_result.append(self.state_machine.result)

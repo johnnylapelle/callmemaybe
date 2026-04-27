@@ -152,25 +152,25 @@ f"{self.state_machine.str_parser.result}"
 *1 function definition and 10 prompts:*
 ```
 Performance:
-Total time: 32.02s
-Token generated: 698
-Speed: 21.799885 tokens/sec
+Total time: 8.11s
+Token generated: 71
+Speed: 8.76 tokens/sec
 ```
 
-*5 functions definitions and 10 prompts:*
+*5 functions definitions and 11 prompts:*
 ```
 Performance:
-Total time: 56.90s
-Token generated: 715
-Speed: 12.565821 tokens/sec
+Total time: 24.96s
+Token generated: 137
+Speed: 5.49 tokens/sec
 ```
 
 *10 functions definitions and 22 prompts:*
 ```
 Performance:
-Total time: 139.37s
-Token generated: 4178
-Speed: 29.978070 tokens/sec
+Total time: 59.57s
+Token generated: 284
+Speed: 4.77 tokens/sec
 ```
 
 - **Speed & Latency**: Testing shows a direct correlation between context size and generation speed. With a single function definition, the system reaches ~22 tokens/sec. However, increasing the prompt complexity (e.g., 5+ functions) without KV Caching drops the speed to ~12 tokens/sec due to the linear increase in attention re-computation.
@@ -194,6 +194,9 @@ To optimize the decoding process, the system uses NumPy vectorization to apply c
 	- Deterministic Logic: For example, when generating numbers, if the LLM starts with 0, the FSM transitions to the AFTER_INT state. This state strictly limits the next allowed tokens to characters valid after a zero (such as '.', 'E', or 'e').
 
 	- Strict JSON Compliance: By following these state-driven rules, the program effectively "prunes" the model's vocabulary in real-time, ensuring that every generated value is perfectly valid within the JSON format.
+
+- **String Termination Strategy**:
+Initially, the string generation mask only allowed the ```"``` token to terminate a string. This forced the LLM to generate the closing quote as a standalone token, which conflicted with its natural tokenization — the model often prefers to merge the last word and the closing quote into a single token like ```hello"```. By allowing all tokens containing ```"``` in the mask, the model can generate strings in a more natural way, significantly reducing hallucinations and improving accuracy to over 90% on the test set.
 
 ### Limitations faced
 - **Negative Numbers**: The model occasionally struggles with the leading minus sign or the logic required to transition into a negative numerical state accurately.
