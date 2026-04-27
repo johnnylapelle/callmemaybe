@@ -41,6 +41,10 @@ class Reader():
         try:
             with open(file, 'r') as f:
                 data = json.load(f)
+
+            if not data:
+                raise ValueError(f"File {file} is empty.")
+
             return [FunctionSchema.model_validate(fn) for fn in data]
 
         except ValidationError as e:
@@ -67,6 +71,10 @@ class Reader():
         try:
             with open(file, 'r') as f:
                 data = json.load(f)
+
+            if not data:
+                raise ValueError(f"File {file} is empty.")
+
             return [PromptSchema.model_validate(prompt) for prompt in data]
 
         except ValidationError as e:

@@ -43,8 +43,8 @@ class StringParser():
         self.max_token = 30
         self.char_count = 0
 
-        self.re_regex = re.compile(r'^[a-zA-Z0-9\\\"]+$')
-        self.re_chars = re.compile(r"^[a-zA-Z0-9\sĠ .,!?;:()'\-_+=&{}$*\\/]+$")
+        self.re_regex = re.compile(r'^[a-zA-Z0-9\\+\[\]]+$')
+        self.re_chars = re.compile(r"^[a-zA-Z0-9\sĠ '.,!?;:()\-_+&{}$*\\/]+$")
 
     def transition(self, token: str, curr_param: str) -> bool:
         """Process a token and advance the FSM state.
@@ -57,9 +57,16 @@ class StringParser():
         Returns:
             True if the string is complete, False otherwise.
         """
-        if token != '"':
+
+        if '"' not in token:
             self.result += token
             self.char_count += 1
+
+        elif '"' in token:
+            for letter in token:
+                if letter == '"':
+                    break
+                self.result += letter
 
         if self.state == StateStr.QUOTE:
             if curr_param == "regex":
@@ -68,19 +75,14 @@ class StringParser():
                 self.state = StateStr.CHARACTERS
 
         elif self.state == StateStr.CHARACTERS:
-            if token == '"' or self.char_count >= self.max_token:
+            if '"' in token or self.char_count >= self.max_token:
                 self.state = StateStr.END
-            elif token == '\\':
-                self.state = StateStr.ESCAPE
 
         elif self.state == StateStr.REGEX:
-            if token == '"' or self.char_count >= self.max_token:
+            if '"' in token or self.char_count >= self.max_token:
                 self.state = StateStr.END
             if ']' in token:
                 self.state = StateStr.END
-
-        elif self.state == StateStr.ESCAPE:
-            self.state = StateStr.CHARACTERS
 
         if self.state == StateStr.END:
             return True
@@ -101,18 +103,11 @@ class StringParser():
 
         elif self.state == StateStr.CHARACTERS:
             valid_ids = [id for token, id in self.vocab.vocab.items()
-                         if (self.re_chars.match(token) and '"' not in token)
-                         or token == '"']
+                         if self.re_chars.match(token) or '"' in token]
 
         elif self.state == StateStr.REGEX:
-
             valid_ids = [id for token, id in self.vocab.vocab.items()
-                         if self.re_regex.match(token) and ('"' not in token
-                         or token == '"')]
-
-        elif self.state == StateStr.ESCAPE:
-            valid_ids = self.vocab.get_ids_for([
-                '"', "/", 'b', 'f', 'n', 'r', 't'])
+                         if self.re_regex.match(token) or '"' in token]
 
         return valid_ids
 

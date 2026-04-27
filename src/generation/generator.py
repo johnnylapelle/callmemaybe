@@ -212,6 +212,7 @@ class Generator:
             # add the token to the answer and get the next prompt
             answer += token_decoded
             input_ids = self._get_prompt(answer, prompt)
+            # print(self.llm.decode(input_ids))
 
         print("\n\nGenerated JSON:\n", self.state_machine.result, "\n\n\n")
 

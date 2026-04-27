@@ -32,19 +32,20 @@ make install
 ```
 
 ### Execution
-By default, the program will read input files from the data/input/
-directory and write output to the data/output/ directory. You
+By default, the program will read input files from the data/input/directory and write output to the data/output/ directory. You
 can optionally specify custom paths using the **--functions_definition**, **--input** and **--output** arguments.
 
 You can also specify the model by using the **--model** argument.
 ```
 make run
 
+make run ARG="--output <output_path>"
+
 uv run python -m src
 
 uv run python -m src --input data/input/function_calling.json --functions_definition data/input/functions_definition.json --output data/output/output.json
 
-uv run pythonn -m src --model Qwen/Qwen3-0.6B
+uv run python -m src --model Qwen/Qwen3-0.6B
 ```
 
 ### Debug
@@ -77,7 +78,6 @@ make debug
 - **Documentation**: AI assisted in writing docstrings following PEP 257 (Google style) and drafting README sections including Design decisions, Optimization Strategies, and Performance analysis.
 - **Research synthesis**: AI summarized academic papers and blog posts on constrained decoding (Outlines, SGLang, coalescence) and identified which concepts were applicable to the project.
 - **Debugging**: AI helped interpret Pydantic validation errors and suggested cleaner formatting for error messages.
-- **Testing strategy**: AI introduced pytest patterns and explained how to mock heavy dependencies like Small_LLM_Model to write lightweight unit tests.
 
 ## Algorithm explanation
 The project uses **FSM (Finite-State Machine)** to track each steps of the generation.
@@ -96,6 +96,8 @@ The generation process **focuses exclusively on the function name and its parame
 - First, every function name in ```functions_definition.json``` is retokenized into a dictionary.
 ```
 'fn_add_numbers': ['fn', '_add', '_numbers'],
+'fn_greet': ['fn', '_greet'],
+'fn_get_square_root': ['fn', '_get', '_square', '_string']
 ```
 - The algorithm initializes a list of **potential candidates** containing every available function. At the start, every function is eligible. For each generation step, a mask is applied so that only tokens corresponding to the current index within the remaining candidates are available to the LLM.
 
@@ -113,9 +115,6 @@ Each FSM are built in a way to respect the **JSON structure**. Using theses sche
 "<|im_start|>system\n"
 "You are function-calling assistant.\n"
 f"{self.fn_list}.\n"
-"RULES:\n"
-"- regex parameter must be a valid regex.\n"
-"- replacement parameter must be valids.\n"
 "<|im_end|>\n"
 
 "<|im_start|>user\n"
