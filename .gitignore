@@ -8,6 +8,7 @@ todo.txt
 prompts.txt
 data/output/
 data/test/
+.python-version
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
