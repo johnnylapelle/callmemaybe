@@ -25,10 +25,11 @@ class Parser():
 
         self.args = args
 
-        self.files = {
+        self.parameters = {
             "--functions_definition": "data/input/functions_definition.json",
             "--input": "data/input/function_calling_tests.json",
-            "--output": "data/output/function_calls.json"
+            "--output": "data/output/function_calls.json",
+            "--model": "Qwen/Qwen3-0.6B"
         }
         self.parse_args()
         self.validates_files()
@@ -41,13 +42,14 @@ class Parser():
         """
         arguments = {"--functions_definition": 0,
                      "--input": 0,
-                     "--output": 0}
+                     "--output": 0,
+                     "--model": 0}
 
         for i, arg in enumerate(self.args):
             if arg.startswith('--'):
                 if arg in arguments and arguments[arg] == 0:
                     try:
-                        self.files[arg] = self.args[i + 1]
+                        self.parameters[arg] = self.args[i + 1]
                         arguments[arg] += 1
                     except IndexError:
                         raise ValueError("A file after an args in required.")
@@ -68,7 +70,9 @@ class Parser():
         """
         must_exist = ["--functions_definition", "--input"]
 
-        for k, v in self.files.items():
+        for k, v in self.parameters.items():
+            if k == "--model":
+                continue
             file_path = Path(v)
             if file_path.suffix != '.json':
                 raise ValueError(f"'{v}' is not a .json file.")

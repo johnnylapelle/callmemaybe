@@ -105,8 +105,8 @@ class Generator:
         return (
             "<|im_start|>system\n"
             f"{fn.name} {fn.parameters}.\n"
-            "RULES:\n"
-            "- regex parameter must be a valid regex.\n"
+            # "RULES:\n"
+            # "- regex parameter must be a valid regex.\n"
             "<|im_end|>\n"
 
             "<|im_start|>user\n"

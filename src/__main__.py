@@ -50,9 +50,9 @@ def main() -> None:
         args = sys.argv
 
         # llm = Small_LLM_Model(model_name="Qwen/Qwen3-1.7B")
-        llm = Small_LLM_Model()
         parser = Parser(args)
-        reader = Reader(parser.files)
+        reader = Reader(parser.parameters)
+        llm = Small_LLM_Model(model_name=parser.parameters["--model"])
 
         functions = reader.get_functions()
         prompts = reader.get_prompts()
@@ -82,6 +82,8 @@ def main() -> None:
         tb = traceback.extract_tb(e.__traceback__)[-1]
         print(f"ValueError: {e}")
         print(f"in {tb.filename}, line {tb.lineno} in {tb.name}")
+    except OSError as e:
+        print(f"OsError: {e}")
     except Exception as e:
         traceback.print_exc()
         print(f"Error: {e}")

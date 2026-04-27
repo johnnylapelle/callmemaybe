@@ -34,14 +34,17 @@ make install
 ### Execution
 By default, the program will read input files from the data/input/
 directory and write output to the data/output/ directory. You
-can optionally specify custom paths using the --functions_definition, --input and --output
-arguments.
+can optionally specify custom paths using the **--functions_definition**, **--input** and **--output** arguments.
+
+You can also specify the model by using the **--model** argument.
 ```
 make run
 
 uv run python -m src
 
 uv run python -m src --input data/input/function_calling.json --functions_definition data/input/functions_definition.json --output data/output/output.json
+
+uv run pythonn -m src --model Qwen/Qwen3-0.6B
 ```
 
 ### Debug
