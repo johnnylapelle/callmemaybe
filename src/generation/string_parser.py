@@ -43,7 +43,7 @@ class StringParser():
         self.max_token = 30
         self.char_count = 0
 
-        self.re_regex = re.compile(r'^[a-zA-Z0-9\\\+"]+$')
+        self.re_regex = re.compile(r'^[a-zA-Z0-9\\\"]+$')
         self.re_chars = re.compile(r"^[a-zA-Z0-9\sĠ .,!?;:()'\-_+=&{}$*\\/]+$")
 
     def transition(self, token: str, curr_param: str) -> bool:
