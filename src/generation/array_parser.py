@@ -29,6 +29,8 @@ class ArrayParser():
         self.state = StateArray.OPEN_BRAC
         self.vocab = vocab
         self.result = ""
+        self.max_token = 30
+        self.char_count = 0
 
     def transition(self, token: str) -> bool:
         """Process a token and advance the FSM state.
@@ -39,14 +41,24 @@ class ArrayParser():
         Returns:
             True if the array is complete, False otherwise.
         """
-        if token not in '"':
+        if ']' in token:
+            for letter in token:
+                if letter == ']':
+                    self.result += ']'
+                    break
+                self.result += letter
+        else:
             self.result += token
+            self.char_count += 1
 
         if self.state == StateArray.OPEN_BRAC:
             self.state = StateArray.GENERATION
 
         elif self.state == StateArray.GENERATION:
             if "]" in token:
+                self.state = StateArray.END
+            elif self.char_count > self.max_token:
+                self.result += ']'
                 self.state = StateArray.END
 
         if self.state == StateArray.END:
@@ -75,3 +87,4 @@ class ArrayParser():
         """Reset the parser to its initial state for reuse."""
         self.result = ""
         self.state = StateArray.OPEN_BRAC
+        self.char_count = 0

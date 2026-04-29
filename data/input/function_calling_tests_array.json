@@ -1,0 +1,17 @@
+[
+  {
+    "prompt": "What is the sum of -2 and 3?"
+  },
+  {
+    "prompt": "What is the sum of 265 and 345?"
+  },
+  {
+    "prompt": "What is the sum of test and 45?"
+  },
+  {
+    "prompt": "What is the sum of 2abc65.22 and 345.59?"
+  },
+  {
+    "prompt": "What is the sum of 265e and 345E?"
+  }
+]

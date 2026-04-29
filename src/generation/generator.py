@@ -69,7 +69,7 @@ class Generator:
         """
         return (
             "<|im_start|>system\n"
-            # "Function calling-assistant.\n"
+            "Function calling-assistant.\n"
             f"{self.fn_list}.\n"
             "<|im_end|>\n"
 
@@ -100,6 +100,14 @@ class Generator:
         param_done_str = ", ".join([
             f'{k}="{v}"' for k, v in self.state_machine.params_done.items()
         ])
+        match self.state_machine.state:
+            case State.VALUE_PARAM_STR:
+                result = self.state_machine.str_parser.result
+            case State.VALUE_PARAM_NUMBER:
+                result = self.state_machine.num_parser.result
+            case State.VALUE_PARAM_ARRAY:
+                result = self.state_machine.array_parser.result
+
         return (
             "<|im_start|>system\n"
             f"{fn.name} {fn.parameters}.\n"
@@ -111,7 +119,7 @@ class Generator:
 
             "<|im_start|>assistant\n"
             f"(parameters: {param_done_str} {param}=\""
-            f"{self.state_machine.str_parser.result}"
+            f"{result}"
         )
 
     def _filter_logits(self, logits: list[float],
@@ -144,7 +152,8 @@ class Generator:
             List of token ids to pass to the LLM on the next step.
         """
         if (self.state_machine.state == State.VALUE_PARAM_STR
-           or self.state_machine.state == State.VALUE_PARAM_STR):
+           or self.state_machine.state == State.VALUE_PARAM_NUMBER
+           or self.state_machine.state == State.VALUE_PARAM_ARRAY):
             new_input = self._build_parameters_prompt(user_request)
             input_ids = self.llm.encode(new_input).tolist()[0]
         else:

@@ -1,14 +1,14 @@
 [
   {
-    "name": "fn_greet",
-    "description": "Generate a greeting message for a person by name.",
+    "name": "fn_add_numbers",
+    "description": "Add two numbers together and return their sum.",
     "parameters": {
-      "name": {
-        "type": "string"
+      "nums": {
+        "type": "array"
       }
     },
     "returns": {
-      "type": "string"
+      "type": "number"
     }
   }
 ]

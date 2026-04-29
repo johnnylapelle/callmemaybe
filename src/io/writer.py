@@ -40,6 +40,9 @@ class Writer:
         validated: list[dict[str, Any]] = []
 
         for result in self.results:
+            if "!ERROR!" in result.get("parameters", {}).values():
+                print(f"SKIPPING INVALID RESULT: {result['prompt']}")
+                continue
             try:
                 data = OutputSchema.model_validate(result).model_dump()
                 validated.append(data)

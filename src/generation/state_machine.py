@@ -212,27 +212,33 @@ class StateMachine():
         Reads the result from the appropriate sub-parser, stores it in the
         result dict, then either transitions to the next parameter or moves
         to the END state.
+        If the result generates an error, the !ERROR! flag
+        is set in the parameter values instead.
         """
-        match self.param_type:
-            case "number":
-                result = self.num_parser.result
-                self.result["parameters"][self.curr_param] = float(result)
-            case "integer":
-                result = self.num_parser.result
-                self.result["parameters"][self.curr_param] = int(float(
-                    result))
-            case "string":
-                result = self.str_parser.result
-                self.result["parameters"][self.curr_param] = (
-                    result.strip().replace("\\\\", "\\"))
-            case "array":
-                result = self.array_parser.result
-                self.result["parameters"][self.curr_param] = ast.literal_eval(
-                    result)
-            case "boolean":
-                result = self.str_parser.result
-                self.result["parameters"][self.curr_param] = (
-                    result.strip())
+        try:
+            match self.param_type:
+                case "number":
+                    result = self.num_parser.result
+                    self.result["parameters"][self.curr_param] = float(result)
+                case "integer":
+                    result = self.num_parser.result
+                    self.result["parameters"][self.curr_param] = int(float(
+                        result))
+                case "string":
+                    result = self.str_parser.result
+                    self.result["parameters"][self.curr_param] = (
+                        result.strip().replace("\\\\", "\\"))
+                case "array":
+                    result = self.array_parser.result
+                    self.result["parameters"][self.curr_param] = ast.literal_eval(
+                        result)
+                case "boolean":
+                    result = self.str_parser.result
+                    self.result["parameters"][self.curr_param] = (
+                        result.strip())
+        except Exception:
+            self.result["parameters"][self.curr_param] = "!ERROR!"
+
 
         self.params_done[self.curr_param] = result
 

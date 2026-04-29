@@ -25,7 +25,7 @@ def performance(start_time: float, token_count: int, nb_prompt: int) -> None:
     tps = token_count / duration if duration > 0 else 0
     avg_time = duration / nb_prompt if nb_prompt > 0 else 0
 
-    print("Performance:")
+    print("\nPerformance:")
     print(f"Total time: {duration:.2f}s")
     print(f"Token generated: {token_count}")
     print(f"Speed: {tps:.2f} tokens/sec")
@@ -84,8 +84,9 @@ def main() -> None:
     except OSError as e:
         print(f"OsError: {e}")
     except Exception as e:
-        traceback.print_exc()
-        print(f"Error: {e}")
+        tb = traceback.extract_tb(e.__traceback__)[-1]
+        print(f"\nError: {e}")
+        print(f"in {tb.filename}, line {tb.lineno} in {tb.name}")
         sys.exit(1)
 
 
