@@ -49,10 +49,7 @@ def main() -> None:
         start_time = time.perf_counter()
         token_count = 0
 
-        args = sys.argv
-
-        # llm = Small_LLM_Model(model_name="Qwen/Qwen3-1.7B")
-        parser = Parser(args)
+        parser = Parser(sys.argv)
         reader = Reader(parser.parameters)
         llm = Small_LLM_Model(model_name=parser.parameters["--model"])
 
