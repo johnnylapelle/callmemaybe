@@ -73,6 +73,8 @@ def main() -> None:
 
         performance(start_time, token_count, i)
 
+        print("\nGeneration done !")
+
     except ValidationError as e:
         tb = traceback.extract_tb(e.__traceback__)[-1]
         print(f"ValidationError: {e}")
