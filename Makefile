@@ -23,3 +23,5 @@ clean:
 	rm -rf .mypy_cache
 	rm -rf .vscode
 	find . -type d -name "__pycache__" -exec rm -rf {} +
+
+.PHONY: install run debug clean lint lint-strict
