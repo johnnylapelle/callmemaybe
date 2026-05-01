@@ -12,12 +12,12 @@ debug: install
 	uv run python -m pdb src/__main__.py
 
 lint: install
-	$(FLAKE8) src/
-	$(MYPY) $(FLAGS) src/
+	uv run python -m $(FLAKE8) src/
+	uv run python -m $(MYPY) $(FLAGS) src/
 
 lint-strict:
-	$(FLAKE8) src/
-	$(MYPY) --strict src/
+	uv run python -m $(FLAKE8) src/
+	uv run python -m $(MYPY) --strict src/
 
 clean:
 	rm -rf .mypy_cache
