@@ -230,7 +230,8 @@ class StateMachine():
                         result.strip().replace("\\\\", "\\"))
                 case "array":
                     result = self.array_parser.result
-                    self.result["parameters"][self.curr_param] = ast.literal_eval(
+                    self.result[
+                        "parameters"][self.curr_param] = ast.literal_eval(
                         result)
                 case "boolean":
                     result = self.str_parser.result
@@ -238,7 +239,6 @@ class StateMachine():
                         result.strip())
         except Exception:
             self.result["parameters"][self.curr_param] = "!ERROR!"
-
 
         self.params_done[self.curr_param] = result
 
